@@ -4,31 +4,36 @@ import HeroAnimado from "../components/HeroAnimado.tsx";
 import InvitationPrincipal from "../components/InvitationPrincipal.tsx";
 import Contador from "../components/Contador.tsx";
 import Ubicacion from "../components/Ubicacion.tsx";
+import Padrinos from "../components/Padrinos.tsx";
 ---
 
 <Layout title="Te invito a mis xv años">
 	<main>
-		{/* PANTALLA 1 (Intro) */}
-		{/* Este componente ya es 'min-h-screen' por sí mismo */}
+		{/* --- PORTADA (Pantallas completas) --- */}
 		<HeroAnimado client:load />
-
-		{/* PANTALLA 2 (Hero Principal) */}
-		{
-			/* * === ¡AQUÍ ESTÁ LA CORRECCIÓN! ===
-			 * Volvemos a envolver 'InvitationPrincipal' en una 'section'
-			 * que SÍ tiene el 'id="contenido"'.
-			 * Ahora el '<a href="#contenido">' de HeroAnimado SÍ funcionará.
-			 */
-		}
 		<section id="contenido">
 			<InvitationPrincipal client:visible />
 		</section>
 
-		{/* PANTALLA 3 (Contador) */}
-		<Contador client:visible />
+		{/* --- INFORMACIÓN (Flujo Único) --- */}
+		{
+			/* * Esta es la sección de "flujo único".
+			 * Tiene el fondo rosa pálido y un 'gap-12' (espacio)
+			 * entre cada componente.
+			 */
+		}
+		<section class="bg-brand-light py-16">
+			<div class="flex flex-col gap-12">
+				{/* Componente 1: Contador */}
+				<Contador client:visible />
 
-		{/* PANTALLA 4 (Ubicación) */}
-		{/* 2. Lo añadimos aquí. 'client:visible' porque es interactivo */}
-		<Ubicacion client:visible />
+				{/* Componente 2: Ubicación */}
+				<Ubicacion client:visible />
+
+				{/* Componente 3: Personas especiales */}
+				<Padrinos client:visible />
+				{/* Aquí pondremos el Itinerario, etc. */}
+			</div>
+		</section>
 	</main>
 </Layout>

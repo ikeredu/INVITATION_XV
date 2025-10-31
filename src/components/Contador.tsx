@@ -30,74 +30,79 @@ function calculateTimeLeft() {
 
 export default function Contador() {
     const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
-    useEffect(() => { /* ... */ }, []);
+
+    // Lógica del contador (restaurada)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     const pad = (num: number) => String(num).padStart(2, '0');
 
-    // --- ESTRUCTURA JSX (ACTUALIZADA A 'BRAND') ---
+    // --- ESTRUCTURA JSX ---
     return (
-        // === CAMBIO: 'bg-brand-light' ===
-        <div className="bg-brand-light p-8 py-16 text-center min-h-screen flex flex-col justify-center">
+        /*
+         * === REFACTORIZACIÓN ===
+         * Quitamos 'min-h-screen', 'bg-brand-light', 'py-16'.
+         * El 'index.astro' ahora maneja el fondo y el padding vertical.
+         * Dejamos 'p-8' para el padding horizontal.
+        */
+        <div className="p-8 text-center">
             <div className="max-w-lg mx-auto w-full">
 
                 {/* --- 1. El Texto de Invitación --- */}
                 <div className="mb-12">
                     <div className="flex justify-center mb-6">
-                        {/* === CAMBIO: 'text-brand-icon' (más vibrante) === */}
                         <Quote className="text-brand-icon" size={40} strokeWidth={1} />
                     </div>
-                    <p className="text-lg md:text-xl text-gray-700 leading-relaxed italic font-sans-body mb-8">
+
+                    <p className="text-xl md:text-2xl text-brand-dark leading-relaxed font-script mb-8">
                         "Como no recordar que hace 15 años nació la flor más hermosa de este hogar, por eso te queremos invitar a su celebración, con mucha alegría y dando gracias a Dios por regalarnos tan bello tesoro."
                     </p>
-                    {/* === CAMBIO: 'text-brand-dark' === */}
+
                     <p className="text-2xl font-script text-brand-dark">
                         Papás de Yeri Paola
                     </p>
                 </div>
 
                 {/* --- 2. El Contador (La Tarjeta) --- */}
-                {/* === CAMBIO: 'border-brand-border' === */}
+                {/* Esta tarjeta 'bg-white' flota sobre el fondo 'bg-brand-light' del index */}
                 <div className="bg-white rounded-2xl p-8 shadow-lg w-full border border-brand-border">
                     <div className="flex justify-center mb-6">
-                        {/* === CAMBIO: 'text-brand-icon' === */}
                         <Clock className="text-brand-icon" size={32} strokeWidth={1.5} />
                     </div>
 
-                    {/* === CAMBIO: 'text-brand-base' === */}
                     <h3 className="text-center text-brand-base mb-6 tracking-wide font-sans-body font-light uppercase text-sm">
                         Faltan
                     </h3>
 
-                    {/* === CAMBIO: 'divide-brand-border' === */}
                     <div className="flex justify-between divide-x divide-brand-border">
-
-                        {/* Días */}
                         <div className="flex-1 flex flex-col items-center font-sans-body">
-                            {/* === CAMBIO: 'text-brand-dark' / 'text-brand-subtext' === */}
-                            <div className="text-5xl text-brand-dark tabular-nums">
+                            <div className="text-4xl md:text-5xl text-brand-dark tabular-nums">
                                 {pad(timeLeft.days)}
                             </div>
                             <div className="text-sm text-brand-subtext mt-3">Días</div>
                         </div>
 
-                        {/* Horas */}
-                        <div className="flex-1 flex flex-col items-center font-sans-body pl-4">
-                            <div className="text-5xl text-brand-dark tabular-nums">
+                        <div className="flex-1 flex flex-col items-center font-sans-body">
+                            <div className="text-4xl md:text-5xl text-brand-dark tabular-nums">
                                 {pad(timeLeft.hours)}
                             </div>
                             <div className="text-sm text-brand-subtext mt-3">Horas</div>
                         </div>
 
-                        {/* Minutos */}
-                        <div className="flex-1 flex flex-col items-center font-sans-body pl-4">
-                            <div className="text-5xl text-brand-dark tabular-nums">
+                        <div className="flex-1 flex flex-col items-center font-sans-body">
+                            <div className="text-4xl md:text-5xl text-brand-dark tabular-nums">
                                 {pad(timeLeft.minutes)}
                             </div>
                             <div className="text-sm text-brand-subtext mt-3">Minutos</div>
                         </div>
 
-                        {/* Segundos */}
-                        <div className="flex-1 flex flex-col items-center font-sans-body pl-4">
-                            <div className="text-5xl text-brand-dark tabular-nums">
+                        <div className="flex-1 flex flex-col items-center font-sans-body">
+                            <div className="text-4xl md:text-5xl text-brand-dark tabular-nums">
                                 {pad(timeLeft.seconds)}
                             </div>
                             <div className="text-sm text-brand-subtext mt-3">Segundos</div>
