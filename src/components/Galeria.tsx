@@ -1,25 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
-// 1. Usamos 'framer-motion' que ya está en nuestro proyecto
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera } from 'lucide-react'; // Para el título
 
-// 2. Usamos nuestras imágenes locales
+// 1. Asegúrate de que estas rutas sean CORRECTAS y apunten a tus imágenes .webp optimizadas
 const images = [
-    '/images/carrusel_1.jpg',
-    '/images/carrusel_2.jpg',
-    '/images/carrusel_3.jpg',
-    '/images/carrusel_4.jpg',
-    '/images/carrusel_5.jpg',
-    '/images/carrusel_6.jpg'
+    '/images/carrusel_1.webp',
+    '/images/carrusel_2.webp',
+    '/images/carrusel_3.webp',
+    '/images/carrusel_4.webp',
+    '/images/carrusel_5.webp',
+    '/images/carrusel_6.webp'
 ];
 
-// 3. Renombramos la función a 'Galeria'
 export default function Galeria() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // 4. Tu lógica de Autoplay (¡Perfecta!)
+    // Lógica de Autoplay
     const resetTimeout = () => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -47,7 +45,7 @@ export default function Galeria() {
         });
     };
 
-    // 5. Lógica de Swipe (¡Perfecta!)
+    // Lógica de Swipe
     const swipeConfidenceThreshold = 10000;
     const swipePower = (offset: number, velocity: number) => {
         return Math.abs(offset) * velocity;
@@ -61,7 +59,6 @@ export default function Galeria() {
     };
 
     return (
-        // 6. Fondo oscuro y 'min-h-screen' como pediste
         <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-900 via-brand-dark/50 to-neutral-900">
             {/* Efectos de luz ambiental (usando 'brand') */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -118,11 +115,11 @@ export default function Galeria() {
                                 style={{ transformStyle: 'preserve-3d' }}
                             >
                                 <div className="w-[70vw] h-[70vh] max-w-5xl max-h-[800px] rounded-3xl overflow-hidden shadow-2xl">
-                                    {/* 7. Reemplazamos 'ImageWithFallback' por 'img' */}
                                     <img
                                         src={images[index]}
                                         alt={`Preview ${index}`}
                                         className="w-full h-full object-cover"
+                                        loading="lazy" // Carga la imagen solo cuando se necesite
                                     />
                                 </div>
                             </motion.div>
@@ -165,8 +162,15 @@ export default function Galeria() {
                                     src={images[currentIndex]}
                                     alt={`Slide ${currentIndex + 1}`}
                                     className="w-full h-full object-cover"
+                                    loading="lazy" // Carga la imagen solo cuando se necesite
                                 />
-                                {/* ... (todos los gradientes y efectos se quedan igual) ... */}
+                                {/* Estos gradientes y efectos se quedan igual */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                <div className="absolute inset-0 flex items-end p-8 text-white">
+                                    <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg text-sm font-sans-body opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                        Explora nuestros momentos especiales
+                                    </div>
+                                </div>
                             </motion.div>
                         </motion.div>
                     </AnimatePresence>
@@ -194,7 +198,6 @@ export default function Galeria() {
                             >
                                 {index === currentIndex && (
                                     <motion.div
-                                        // 8. Usamos nuestros colores 'brand'
                                         className="absolute inset-0 bg-gradient-to-r from-brand-icon to-brand-base"
                                         initial={{ scaleX: 0 }}
                                         animate={{ scaleX: 1 }}
@@ -208,6 +211,37 @@ export default function Galeria() {
                 </div>
 
                 {/* Partículas flotantes (¡se quedan igual!) */}
+                <motion.div
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1, duration: 2 }}
+                >
+                    {Array.from({ length: 50 }).map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute bg-white/20 rounded-full"
+                            style={{
+                                width: Math.random() * 8 + 4,
+                                height: Math.random() * 8 + 4,
+                                x: Math.random() * window.innerWidth - window.innerWidth / 2,
+                                y: Math.random() * window.innerHeight - window.innerHeight / 2,
+                            }}
+                            animate={{
+                                x: [null, Math.random() * 200 - 100, Math.random() * 200 - 100, Math.random() * 200 - 100, null],
+                                y: [null, Math.random() * 200 - 100, Math.random() * 200 - 100, Math.random() * 200 - 100, null],
+                                scale: [1, 1.5, 0.8, 1.2, 1],
+                                opacity: [0, 0.5, 0.2, 0.7, 0],
+                            }}
+                            transition={{
+                                duration: Math.random() * 20 + 10,
+                                repeat: Infinity,
+                                ease: "linear",
+                                delay: Math.random() * 5,
+                            }}
+                        />
+                    ))}
+                </motion.div>
             </div>
         </div>
     );

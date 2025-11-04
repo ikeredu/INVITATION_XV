@@ -5,7 +5,7 @@ import InvitationPrincipal from "../components/InvitationPrincipal.tsx";
 import Contador from "../components/Contador.tsx";
 import Ubicacion from "../components/Ubicacion.tsx";
 import Padrinos from "../components/Padrinos.tsx";
-import Galeria from "../components/Galeria";
+import Galeria from "../components/Galeria.tsx";
 ---
 
 <Layout title="Te invito a mis xv años">
@@ -36,7 +36,14 @@ import Galeria from "../components/Galeria";
 			</div>
 		</section>
 		<section>
-			<Galeria client:visible />
+			{
+				/* * === 🔴 CORRECCIÓN ===
+				 * Usamos 'client:only="react"' porque este componente
+				 * usa 'window' (un API del navegador) y no puede
+				 * ser renderizado en el servidor (SSR).
+				 */
+			}
+			<Galeria client:only="react" />
 		</section>
 	</main>
 </Layout>
