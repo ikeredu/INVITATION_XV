@@ -5,6 +5,7 @@ import InvitationPrincipal from "../components/InvitationPrincipal.tsx";
 import Contador from "../components/Contador.tsx";
 import Ubicacion from "../components/Ubicacion.tsx";
 import Padrinos from "../components/Padrinos.tsx";
+import Galeria from "../components/Galeria";
 ---
 
 <Layout title="Te invito a mis xv años">
@@ -32,8 +33,10 @@ import Padrinos from "../components/Padrinos.tsx";
 
 				{/* Componente 3: Personas especiales */}
 				<Padrinos client:visible />
-				{/* Aquí pondremos el Itinerario, etc. */}
 			</div>
+		</section>
+		<section>
+			<Galeria client:visible />
 		</section>
 	</main>
 </Layout>

@@ -12,7 +12,7 @@ export default function InvitacionPrincipal() {
                 transition={{ duration: 15, ease: 'linear' }}
             >
                 <img
-                    src="/images/section_1.jpg" // La foto de Yeri Paola
+                    src="/images/DSC_1374.jpg" // La foto de Yeri Paola
                     alt="Quinceañera Yeri Paola"
                     className="w-full h-full object-cover"
                 />

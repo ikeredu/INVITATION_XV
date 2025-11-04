@@ -33,7 +33,7 @@ export default function HeroAnimado() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
                         >
-                            Desliza para
+                            Desliza para comenzar
                         </motion.h1>
                         <motion.h1
                             className="text-4xl md:text-5xl text-white font-serif italic"
@@ -41,7 +41,7 @@ export default function HeroAnimado() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.4 }}
                         >
-                            abrir
+
                         </motion.h1>
                     </div>
                     <motion.div
