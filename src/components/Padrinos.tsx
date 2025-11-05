@@ -35,7 +35,7 @@ const personas = [
         icono: Users,
         personas: [
             { nombre: "Sra. Rosa Elena Feliciano López", rol: "" },
-            { nombre: "Ing. Manuel Damian Martínez", rol: "" }
+            { nombre: "Ing. Manuel Damián Martínez", rol: "" }
         ],
         gradienteIcono: "from-brand-base to-brand-icon",
         gradienteBg: "from-brand-light/20 to-brand-light/50"
