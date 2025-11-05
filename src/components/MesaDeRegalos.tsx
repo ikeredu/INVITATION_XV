@@ -2,12 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Shirt, Sparkles, Footprints, Dog, Palette, ShoppingBag } from 'lucide-react';
 
-// === 🔴 CORRECCIÓN 1: Importamos el hook de 'react' ===
-import useEmblaCarousel from 'embla-carousel-react';
-// === 🔴 CORRECCIÓN 2: Importamos el TIPO de 'embla-carousel' (el paquete central) ===
-import { type EmblaCarouselType } from 'embla-carousel';
-// === 🔴 CORRECCIÓN 3: Importamos el plugin de 'autoplay' ===
-import Autoplay from 'embla-carousel-autoplay';
+// === 1. Importamos Embla (el hook de React y el TIPO de 'embla-carousel') ===
+import useEmblaCarousel, { type EmblaCarouselType } from 'embla-carousel-react';
+// NO importamos Autoplay
 
 // --- DATOS (Tus arrays) ---
 const wishlistItems = [
@@ -73,21 +70,16 @@ export default function MesaDeRegalos() {
         return () => clearInterval(phraseTimer);
     }, []);
 
-    // --- Configuración del Autoplay (Corregido) ---
-    const autoplay = useRef(
-        Autoplay({
-            delay: 3000,
-            stopOnInteraction: true,
-            stopOnMouseEnter: true,
-        })
-    );
-
+    // === 2. Configuración de Embla (SIN AUTOPLAY) ===
     const [emblaRef, emblaApi] = useEmblaCarousel(
-        { loop: true, align: 'center' },
-        [autoplay.current]
+        {
+            loop: true, // ¡Tu 'loop circular'!
+            align: 'center'
+        }
+        // No pasamos ningún plugin
     );
 
-    // --- Lógica para la tarjeta "grande" (Corregido) ---
+    // === 3. Lógica para la tarjeta "grande" (Corregido) ===
     useEffect(() => {
         if (!emblaApi) return;
 
@@ -117,19 +109,36 @@ export default function MesaDeRegalos() {
                     <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4">
                         <Gift className="w-10 h-10 text-brand-base" />
                     </div>
-                    <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
-                        Lista de Deseos
-                    </h2>
+                                        <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
+                                            Lista de Deseos
+                                        </h2>
                     <p className="text-brand-base/80 px-4 font-sans-body max-w-md mx-auto">
                         Si deseas hacerme un regalo, aquí están algunas ideas de cosas que me encantaría recibir
                     </p>
                 </motion.div>
 
-                {/* --- El Carrusel Embla --- */}
+                {/* === 4. Indicador "Desliza" (Restaurado) === */}
+                <motion.div
+                    className="text-center mb-4"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                >
+                    <motion.p
+                        className="text-brand-base/70 text-sm font-sans-body"
+                        animate={{ x: [0, 10, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                        ← Desliza para ver más →
+                    </motion.p>
+                </motion.div>
+
+                {/* --- El Carrusel Embla (Manual e Infinito) --- */}
                 <div
+                    // === 5. 'overflow-hidden' QUITA LA BARRA FEA ===
                     className="overflow-hidden cursor-grab active:cursor-grabbing"
                     ref={emblaRef}
-                    onMouseLeave={() => autoplay.current.play()} // Reanuda al quitar el mouse
                 >
                     <div className="flex -ml-4 py-4">
                         {wishlistItems.map((item, index) => {
@@ -137,6 +146,7 @@ export default function MesaDeRegalos() {
                             const isActive = index === activeIndex;
                             return (
                                 <div key={index} className="flex-shrink-0 w-[85%] sm:w-[70%] md:w-1/3 pl-4">
+                                    {/* === 6. El efecto "scale" (más grande) === */}
                                     <motion.div
                                         className="h-full"
                                         animate={{
@@ -149,9 +159,9 @@ export default function MesaDeRegalos() {
                                             <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-light/50 rounded-full">
                                                 <IconComponent className="w-12 h-12 text-brand-base" />
                                             </div>
-                                            <h3 className="text-brand-base text-2xl font-script">
-                                                {item.title}
-                                            </h3>
+                                                                                        <h3 className="text-brand-base text-2xl font-script">
+                                                                                            {item.title}
+                                                                                        </h3>
                                             <p className="text-gray-600 text-sm font-sans-body flex-grow">
                                                 {item.description}
                                             </p>

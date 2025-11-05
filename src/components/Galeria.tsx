@@ -8,6 +8,8 @@ import carrusel3 from '../assets/galeria/carrusel_3.webp';
 import carrusel4 from '../assets/galeria/carrusel_4.webp';
 import carrusel5 from '../assets/galeria/carrusel_5.webp';
 import carrusel6 from '../assets/galeria/carrusel_6.webp';
+import carrusel7 from '../assets/galeria/carrusel_7.webp';
+import carrusel8 from '../assets/galeria/carrusel_8.webp';
 
 const images = [
     carrusel1.src,
@@ -15,7 +17,9 @@ const images = [
     carrusel3.src,
     carrusel4.src,
     carrusel5.src,
-    carrusel6.src
+    carrusel6.src,
+    carrusel7.src,
+    carrusel8.src
 ];
 
 // --- Versión Final con Animación Sutil ---
