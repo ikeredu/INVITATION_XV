@@ -14,18 +14,18 @@ const personas = [
         titulo: "Padrinos de Brindis",
         icono: Sparkles,
         personas: [
-            { nombre: "Ing. Ana Ara Arcos", rol: "Madrina" },
-            { nombre: "Ing. David Cruz Hernández", rol: "Padrino" }
+            { nombre: "Ing. Ana Ara Arcos", rol: "" },
+            { nombre: "Ing. David Cruz Hernández", rol: "" }
         ],
         gradienteIcono: "from-brand-base to-brand-icon",
         gradienteBg: "from-brand-light/20 to-brand-light/50"
     },
     {
-        titulo: "Mis Padres", // Centrado por defecto
+        titulo: "Padres", // Centrado por defecto
         icono: Heart,
         personas: [
-            { nombre: "Sra. Elizabeth Cruz Hernández", rol: "Mamá" },
-            { nombre: "Lic. Royder Méndez Frank", rol: "Papá" }
+            { nombre: "Sra. Elizabeth Cruz Hernández", rol: "" },
+            { nombre: "Mtro. Royder Méndez Frank", rol: "" }
         ],
         gradienteIcono: "from-brand-base to-brand-icon",
         gradienteBg: "from-brand-light/20 to-brand-light/50"
@@ -34,8 +34,8 @@ const personas = [
         titulo: "Padrinos de Velación",
         icono: Users,
         personas: [
-            { nombre: "Sra. Rosa Elena Feliciano López", rol: "Madrina" },
-            { nombre: "Ing. Manuel Damian Martínez", rol: "Padrino" }
+            { nombre: "Sra. Rosa Elena Feliciano López", rol: "" },
+            { nombre: "Ing. Manuel Damian Martínez", rol: "" }
         ],
         gradienteIcono: "from-brand-base to-brand-icon",
         gradienteBg: "from-brand-light/20 to-brand-light/50"
