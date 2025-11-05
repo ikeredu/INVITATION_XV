@@ -35,15 +35,11 @@ import Galeria from "../components/Galeria.tsx";
 				<Padrinos client:visible />
 			</div>
 		</section>
+		{/* --- GALERÍA (Nueva Experiencia Full-Screen) --- */}
 		<section>
-			{
-				/* * === 🔴 CORRECCIÓN ===
-				 * Usamos 'client:only="react"' porque este componente
-				 * usa 'window' (un API del navegador) y no puede
-				 * ser renderizado en el servidor (SSR).
-				 */
-			}
-			<Galeria client:only="react" />
+			{/* === 🔴 CORRECCIÓN: Volvemos a client:load === */}
+			{/* (Ahora podemos porque ya no hay error de 'window') */}
+			<Galeria client:load />
 		</section>
 	</main>
 </Layout>
