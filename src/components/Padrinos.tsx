@@ -95,7 +95,7 @@ export default function Padrinos() {
                         Personas especiales
                     </h2>
                     <p className="text-brand-base/80 px-4 font-sans-body">
-                        section           Que nos acompañan en este día tan importante
+                        Que nos acompañan en este día tan importante
                     </p>
                 </motion.div>
 

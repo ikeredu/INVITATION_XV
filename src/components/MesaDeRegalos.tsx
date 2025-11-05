@@ -2,17 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Shirt, Sparkles, Footprints, Dog, Palette, ShoppingBag } from 'lucide-react';
 
-// === 1. Importamos Embla (el hook de React y el TIPO de 'embla-carousel') ===
-import useEmblaCarousel, { type EmblaCarouselType } from 'embla-carousel-react';
-// NO importamos Autoplay
+// === 🔴 ¡LA CORRECCIÓN DEFINITIVA DE IMPORTS! ===
+import useEmblaCarousel from 'embla-carousel-react';
+// 1. El TIPO correcto se importa desde el paquete 'embla-carousel'
+import { type EmblaCarouselType } from 'embla-carousel';
+// 2. NO importamos 'Autoplay'
 
 // --- DATOS (Tus arrays) ---
 const wishlistItems = [
-    {
-        icon: Dog,
-        title: "Peluches de Capibara",
-        description: "Me encantan los capibaras, son tan lindos y tiernos 💕",
-    },
     {
         icon: Footprints,
         title: "Mis tenis favoritos",
@@ -70,21 +67,21 @@ export default function MesaDeRegalos() {
         return () => clearInterval(phraseTimer);
     }, []);
 
-    // === 2. Configuración de Embla (SIN AUTOPLAY) ===
+    // === 3. Configuración de Embla (SIN AUTOPLAY) ===
     const [emblaRef, emblaApi] = useEmblaCarousel(
         {
             loop: true, // ¡Tu 'loop circular'!
             align: 'center'
         }
-        // No pasamos ningún plugin
     );
 
-    // === 3. Lógica para la tarjeta "grande" (Corregido) ===
+    // === 4. Lógica para la tarjeta "grande" (Ahora SÍ funciona) ===
     useEffect(() => {
         if (!emblaApi) return;
 
-        // Usamos el TIPO 'EmblaCarouselType' que importamos
+        // Usamos el TIPO 'EmblaCarouselType' (importado de 'embla-carousel')
         const onSelect = (api: EmblaCarouselType) => {
+            // El método 'selectedScrollSnap()' ahora SÍ existe en este tipo
             setActiveIndex(api.selectedScrollSnap());
         };
 
@@ -109,15 +106,15 @@ export default function MesaDeRegalos() {
                     <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4">
                         <Gift className="w-10 h-10 text-brand-base" />
                     </div>
-                                        <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
-                                            Lista de Deseos
-                                        </h2>
+                    <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
+                        Lista de Deseos
+                    </h2>
                     <p className="text-brand-base/80 px-4 font-sans-body max-w-md mx-auto">
                         Si deseas hacerme un regalo, aquí están algunas ideas de cosas que me encantaría recibir
                     </p>
                 </motion.div>
 
-                {/* === 4. Indicador "Desliza" (Restaurado) === */}
+                {/* === 5. Indicador "Desliza" (Restaurado) === */}
                 <motion.div
                     className="text-center mb-4"
                     initial={{ opacity: 0 }}
@@ -136,7 +133,7 @@ export default function MesaDeRegalos() {
 
                 {/* --- El Carrusel Embla (Manual e Infinito) --- */}
                 <div
-                    // === 5. 'overflow-hidden' QUITA LA BARRA FEA ===
+                    // 'overflow-hidden' QUITA LA BARRA FEA
                     className="overflow-hidden cursor-grab active:cursor-grabbing"
                     ref={emblaRef}
                 >
@@ -159,11 +156,11 @@ export default function MesaDeRegalos() {
                                             <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-light/50 rounded-full">
                                                 <IconComponent className="w-12 h-12 text-brand-base" />
                                             </div>
-                                                                                        <h3 className="text-brand-base text-2xl font-script">
-                                                                                            {item.title}
-                                                                                        </h3>
+                                            <h3 className="text-brand-base text-2xl font-script">
+                                                {item.title}
+                                            </h3>
                                             <p className="text-gray-600 text-sm font-sans-body flex-grow">
-                                                {item.description}
+                                                CSS                 	{item.description}
                                             </p>
                                         </div>
                                     </motion.div>
@@ -175,7 +172,7 @@ export default function MesaDeRegalos() {
 
                 {/* --- Tarjeta de Frases Rotativas (Se queda igual) --- */}
                 <div className="text-center mt-12 max-w-md mx-auto relative h-24 flex items-center justify-center">
-                    <AnimatePresence mode="wait">
+                    t     	<AnimatePresence mode="wait">
                         <motion.div
                             key={currentPhrase}
                             initial={{ scale: 0.8, opacity: 0 }}
