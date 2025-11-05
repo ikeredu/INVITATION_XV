@@ -49,9 +49,9 @@ export default function InvitacionPrincipal() {
                     className="space-y-1 text-left"
                 >
                     {/* === MEJORA: Añadido font-light === */}
-                    <p className="text-lg font-sans-body drop-shadow-md font-light">13/12/2025</p>
+                    <p className="text-lg font-sans-body drop-shadow-md font-light">Fecha del evento - 13/12/2025</p>
                     {/* === MEJORA: Añadido font-light === */}
-                    <p className="text-base font-sans-body drop-shadow-md">19:00 pm</p>
+                    <p className="text-base font-sans-body drop-shadow-md"></p>
                 </motion.div>
 
             </div>
