@@ -21,7 +21,7 @@ const personas = [
         gradienteBg: "from-brand-light/20 to-brand-light/50"
     },
     {
-        titulo: "Nuestros Padres", // Centrado por defecto
+        titulo: "Mis Padres", // Centrado por defecto
         icono: Heart,
         personas: [
             { nombre: "Sra. Elizabeth Cruz Hernández", rol: "Mamá" },
