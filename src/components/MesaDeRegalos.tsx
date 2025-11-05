@@ -160,7 +160,7 @@ export default function MesaDeRegalos() {
                                                 {item.title}
                                             </h3>
                                             <p className="text-gray-600 text-sm font-sans-body flex-grow">
-                                                CSS                 	{item.description}
+                                                {item.description}
                                             </p>
                                         </div>
                                     </motion.div>
@@ -172,7 +172,7 @@ export default function MesaDeRegalos() {
 
                 {/* --- Tarjeta de Frases Rotativas (Se queda igual) --- */}
                 <div className="text-center mt-12 max-w-md mx-auto relative h-24 flex items-center justify-center">
-                    t     	<AnimatePresence mode="wait">
+                    <AnimatePresence mode="wait">
                         <motion.div
                             key={currentPhrase}
                             initial={{ scale: 0.8, opacity: 0 }}
