@@ -182,7 +182,7 @@ export default function MesaDeRegalos() {
                             className="absolute inset-0"
                         >
                             <div className="bg-white border-0 shadow-lg rounded-3xl p-6 w-full h-full flex items-center justify-center border-brand-border">
-                                <p className="text-brand-dark italic font-script text-xl">
+                                <p className="text-brand-base text-2xl font-script">
                                     {phrases[currentPhrase]}
                                 </p>
                             </div>
