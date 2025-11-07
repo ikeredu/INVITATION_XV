@@ -1,6 +1,7 @@
 import { useState } from 'react';
 // Importamos todos los iconos que necesitamos
 import { Church, PartyPopper, Loader2, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 type EventType = 'ceremony' | 'reception' | null;
 
@@ -35,14 +36,29 @@ export default function Ubicacion() {
         <div className="p-4 flex flex-col justify-center">
             <div className="w-full max-w-md mx-auto flex flex-col flex-1">
 
-                {/* --- Título de la Sección (con icono) --- */}
-                <div className="p-6 text-center">
-                    <div className="flex justify-center mb-6">
-                        <MapPin className="text-brand-icon" size={32} strokeWidth={1.5} />
-                    </div>
-                    <h2 className="text-3xl font-script text-brand-dark">Ubicación</h2>
-                    <p className="font-sans-body text-gray-600 mt-2">¡No faltes!</p>
-                </div>
+                {/* --- Título de la Sección --- */}
+                <motion.div
+                    className="text-center mb-8"
+                    initial={{ opacity: 0, y: -20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <motion.div
+                        className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4"
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                        <MapPin className="w-10 h-10 text-brand-base" fill="white" />
+                    </motion.div>
+
+                    <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
+                        Ubicación
+                    </h2>
+                    <p className="text-brand-base/80 px-4 font-sans-body">
+                        ¡No faltes!
+                    </p>
+                </motion.div>
 
                 {/* --- Botones de Eventos --- */}
                 <div className="grid grid-cols-2 gap-3 p-4">

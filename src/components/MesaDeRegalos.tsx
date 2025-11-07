@@ -31,11 +31,6 @@ const wishlistItems = [
         description: "Labiales, sombras, rubores y todo lo que brille ✨",
     },
     {
-        icon: Dog,
-        title: "Peluches",
-        description: "De cualquier animalito adorable",
-    },
-    {
         icon: Gift,
         title: "Accesorios",
         description: "Aretes, collares, pulseras, diademas y más",
@@ -103,14 +98,19 @@ export default function MesaDeRegalos() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
                 >
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4">
-                        <Gift className="w-10 h-10 text-brand-base" />
-                    </div>
+                    <motion.div
+                        className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4"
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                        <Gift className="w-10 h-10 text-brand-base" fill="white" />
+                    </motion.div>
+
                     <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
                         Lista de Deseos
                     </h2>
-                    <p className="text-brand-base/80 px-4 font-sans-body max-w-md mx-auto">
-                        Si deseas hacer un regalo, aquí están algunas ideas de obsequios, que de seguro le encantarán.
+                    <p className="text-brand-base/80 px-4 font-sans-body">
+                        Si deseas hacer un regalo, aquí están algunas ideas de obsequios, que de seguro le encantarán
                     </p>
                 </motion.div>
 

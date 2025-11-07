@@ -58,7 +58,7 @@ export default function Contador() {
                     </div>
 
                     <p className="text-xl md:text-2xl text-brand-dark leading-relaxed font-script mb-8">
-                        "Como no recordar que hace 15 años nació la flor más hermosa de este hogar, por eso te queremos invitar a su celebración, con mucha alegría y dando gracias a Dios por regalarnos tan bello tesoro."
+                        "Como no recordar que hace 15 años nació la flor más hermosa de este hogar, por eso, con gran alegría y agradecimiento a Dios, tenemos el honor de invitarles a celebrar junto a nosotros, uno de los momentos más especiales en la vida de nuestra amada hija, sus XV años. Será un día lleno de emociones, sueños, y recuerdos inolvidables que deseamos compartir con ustedes."
                     </p>
 
                     <p className="text-2xl font-script text-brand-dark">

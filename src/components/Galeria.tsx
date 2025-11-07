@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from './Sparkles'; // --- ✅ IMPORTAMOS SPARKLES ---
+// src/components/Galeria.tsx
 
-// --- Las importaciones de imágenes siguen igual ---
+// 💡 1. IMPORTAMOS 'useEffect'
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles } from './Sparkles';
+
+// --- Importaciones de imágenes (sin cambios) ---
 import carrusel1 from '../assets/galeria/carrusel_1.webp';
 import carrusel2 from '../assets/galeria/carrusel_2.webp';
 import carrusel3 from '../assets/galeria/carrusel_3.webp';
@@ -10,11 +13,10 @@ import carrusel4 from '../assets/galeria/carrusel_4.webp';
 import carrusel5 from '../assets/galeria/carrusel_5.webp';
 import carrusel6 from '../assets/galeria/carrusel_6.webp';
 import carrusel7 from '../assets/galeria/carrusel_7.webp';
-import carrusel8 from '../assets/galeria/carrusel_8.webp';
 
 const images = [
     carrusel1.src, carrusel2.src, carrusel3.src, carrusel4.src,
-    carrusel5.src, carrusel6.src, carrusel7.src, carrusel8.src
+    carrusel5.src, carrusel6.src, carrusel7.src
 ];
 
 const variants = {
@@ -27,6 +29,17 @@ export default function Galeria() {
     const [page, setPage] = useState([0, 0]);
     const [currentIndex, direction] = page;
 
+    // --- 💡 2. ¡AQUÍ ESTÁ LA SOLUCIÓN! ---
+    // Pre-cargamos todas las imágenes de la galería en la caché del navegador
+    // cuando el componente se monta por primera vez.
+    useEffect(() => {
+        images.forEach((imageSrc) => {
+            const img = new Image();
+            img.src = imageSrc;
+        });
+    }, []); // El array vacío '[]' asegura que esto se ejecute SOLO UNA VEZ.
+
+    // --- Lógica de paginación (sin cambios) ---
     const paginate = (newDirection: number) => {
         let newIndex = currentIndex + newDirection;
         if (newIndex < 0) newIndex = images.length - 1;
@@ -40,9 +53,9 @@ export default function Galeria() {
     };
 
     return (
+        // --- El resto del JSX es idéntico ---
         <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-900 via-brand-dark/50 to-neutral-900 px-4 py-20">
 
-            {/* --- ✅ AUMENTAMOS LA CANTIDAD DE ESTRELLAS A 70 --- */}
             <Sparkles count={70} />
 
             <div className="text-center mb-8 z-20">
