@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Clock, Quote } from 'lucide-react';
 
-// --- LÓGICA DE REACT (Se queda igual) ---
-
 interface TimeLeft {
     days: number;
     hours: number;

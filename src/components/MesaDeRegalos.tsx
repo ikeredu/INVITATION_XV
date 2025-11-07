@@ -1,34 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, Shirt, Sparkles, Footprints, Dog, Palette, ShoppingBag } from 'lucide-react';
+import { Gift, Shirt, Sparkles, Footprints, Dog, Palette, ShoppingBag, CardSim } from 'lucide-react';
 
-// === 🔴 ¡LA CORRECCIÓN DEFINITIVA DE IMPORTS! ===
+
 import useEmblaCarousel from 'embla-carousel-react';
-// 1. El TIPO correcto se importa desde el paquete 'embla-carousel'
-import { type EmblaCarouselType } from 'embla-carousel';
-// 2. NO importamos 'Autoplay'
 
-// --- DATOS (Tus arrays) ---
+import { type EmblaCarouselType } from 'embla-carousel';
+
+
 const wishlistItems = [
-    {
-        icon: Footprints,
-        title: "Mis tenis favoritos",
-        description: "Los Converse son mi estilo, casuales y cómodos 💙",
-    },
-    {
-        icon: Dog,
-        title: "Peluches",
-        description: "De cualquier animalito adorable que me recuerde este día",
-    },
+
     {
         icon: Shirt,
         title: "Vestidos",
-        description: "Talla M - Me encantan los vestidos elegantes y coloridos",
+        description: "Talla M - Paola ama los vestidos elegantes y coloridos",
     },
     {
-        icon: Palette,
-        title: "Mi color favorito",
-        description: "El rosa me hace sentir feliz y alegre 💕",
+        icon: Footprints,
+        title: "Calzado",
+        description: "Talla 25 - Luce bien con tenis o zapatillas en colores neutros",
     },
     {
         icon: ShoppingBag,
@@ -41,18 +31,28 @@ const wishlistItems = [
         description: "Labiales, sombras, rubores y todo lo que brille ✨",
     },
     {
+        icon: Dog,
+        title: "Peluches",
+        description: "De cualquier animalito adorable",
+    },
+    {
         icon: Gift,
         title: "Accesorios",
         description: "Aretes, collares, pulseras, diademas y más",
+    },
+    {
+        icon: CardSim,
+        title: "Tarjetas de regalo",
+        description: "De cualquier plataforma, o tienda departamental",
     },
 ];
 
 const phrases = [
     "¡Pero recuerda que tu presencia es el mejor regalo! 💖",
-    "Mis tenis favoritos son los Converse 💙",
-    "Mi animal favorito son los gatos 🌿",
-    "El rosa es mi color favorito 💕",
-    "Me encanta el estilo elegante y casual ✨",
+    "Los tenis favoritos de Yeri son los Converse 💙",
+    "Su animal favorito son los gatos 🌿",
+    "El rosa es el color favorito de Paola 💕",
+    "El estilo que porta puede ser casual, o elegante ✨",
 ];
 
 export default function MesaDeRegalos() {
@@ -110,7 +110,7 @@ export default function MesaDeRegalos() {
                         Lista de Deseos
                     </h2>
                     <p className="text-brand-base/80 px-4 font-sans-body max-w-md mx-auto">
-                        Si deseas hacerme un regalo, aquí están algunas ideas de cosas que me encantaría recibir
+                        Si deseas hacer un regalo, aquí están algunas ideas de obsequios, que de seguro le encantarán.
                     </p>
                 </motion.div>
 

@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles } from './Sparkles'; // --- ✅ IMPORTAMOS SPARKLES ---
 
-// Las importaciones de imágenes son correctas
+// --- Las importaciones de imágenes siguen igual ---
 import carrusel1 from '../assets/galeria/carrusel_1.webp';
 import carrusel2 from '../assets/galeria/carrusel_2.webp';
 import carrusel3 from '../assets/galeria/carrusel_3.webp';
@@ -12,64 +13,60 @@ import carrusel7 from '../assets/galeria/carrusel_7.webp';
 import carrusel8 from '../assets/galeria/carrusel_8.webp';
 
 const images = [
-    carrusel1.src,
-    carrusel2.src,
-    carrusel3.src,
-    carrusel4.src,
-    carrusel5.src,
-    carrusel6.src,
-    carrusel7.src,
-    carrusel8.src
+    carrusel1.src, carrusel2.src, carrusel3.src, carrusel4.src,
+    carrusel5.src, carrusel6.src, carrusel7.src, carrusel8.src
 ];
 
-// --- Versión Final con Animación Sutil ---
+const variants = {
+    enter: { opacity: 0 },
+    center: { zIndex: 1, opacity: 1 },
+    exit: { zIndex: 0, opacity: 0 },
+};
+
 export default function Galeria() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [page, setPage] = useState([0, 0]);
+    const [currentIndex, direction] = page;
 
-    const resetTimeout = () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
-
-    useEffect(() => {
-        resetTimeout();
-        timeoutRef.current = setTimeout(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 3000);
-
-        return () => { resetTimeout(); };
-    }, [currentIndex]);
+    const paginate = (newDirection: number) => {
+        let newIndex = currentIndex + newDirection;
+        if (newIndex < 0) newIndex = images.length - 1;
+        else if (newIndex >= images.length) newIndex = 0;
+        setPage([newIndex, newDirection]);
+    };
 
     const goToSlide = (slideIndex: number) => {
-        resetTimeout();
-        setCurrentIndex(slideIndex);
+        const newDirection = slideIndex > currentIndex ? 1 : -1;
+        setPage([slideIndex, newDirection]);
     };
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-900 via-brand-dark/50 to-neutral-900">
-            {/* Título (con animación) */}
-            <motion.div
-                className="absolute top-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4"
-                initial={{ opacity: 0, y: -20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-            >
-                <div className="relative px-6 py-3 bg-white/5 backdrop-blur-md rounded-full border border-white/10">
-                    <span className="text-white/90 font-sans-body">{String(currentIndex + 1).padStart(2, '0')}</span>
-                    <span className="text-white/40 mx-2">/</span>
-                    <span className="text-white/60 font-sans-body">{String(images.length).padStart(2, '0')}</span>
-                </div>
-                <h2 className="text-4xl font-script text-white/90">Nuestra Galería</h2>
-            </motion.div>
+        <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-900 via-brand-dark/50 to-neutral-900 px-4 py-20">
 
-            {/* Contenedor principal del carrusel que define el tamaño */}
-            <div className="relative z-10 w-[70vw] h-[70vh] max-w-5xl max-h-[800px] rounded-3xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]">
-                <AnimatePresence initial={false}>
+            {/* --- ✅ AUMENTAMOS LA CANTIDAD DE ESTRELLAS A 70 --- */}
+            <Sparkles count={70} />
+
+            <div className="text-center mb-8 z-20">
+                <h2 className="text-4xl font-script text-white/90">Galería</h2>
+            </div>
+
+            <div className="relative z-10 w-[70vw] h-[60vh] md:w-[60vw] md:h-[70vh] max-w-4xl max-h-[700px] rounded-3xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]">
+                <AnimatePresence initial={false} custom={direction}>
                     <motion.div
                         key={currentIndex}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.7, ease: 'easeInOut' }}
+                        custom={direction}
+                        variants={variants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{ opacity: { type: "tween", duration: 0.5, ease: "easeOut" } }}
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        dragElastic={0.2}
+                        onDragEnd={(e, { offset, velocity }) => {
+                            const swipeThreshold = 50;
+                            if (offset.x < -swipeThreshold || velocity.x < -300) paginate(1);
+                            else if (offset.x > swipeThreshold || velocity.x > 300) paginate(-1);
+                        }}
                         className="absolute inset-0"
                     >
                         <img
@@ -77,39 +74,36 @@ export default function Galeria() {
                             alt={`Slide ${currentIndex + 1}`}
                             className="w-full h-full object-cover"
                         />
-                        {/* Gradientes y efectos sobre la imagen */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div className="absolute inset-0 flex items-end p-8 text-white">
-                            <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg text-sm font-sans-body opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                Explora nuestros momentos especiales
-                            </div>
-                        </div>
                     </motion.div>
                 </AnimatePresence>
             </div>
 
-            {/* Indicadores de navegación (con animación) */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-                {images.map((_, index) => (
-                    <motion.button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        className="group relative"
-                        whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
-                    >
-                        <div className={`relative overflow-hidden rounded-full transition-all duration-500 ${index === currentIndex ? 'w-16 h-2 bg-white' : 'w-2 h-2 bg-white/40 group-hover:bg-white/60'}`}>
-                            {index === currentIndex && (
-                                <motion.div
-                                    className="absolute inset-0 bg-gradient-to-r from-brand-icon to-brand-base"
-                                    initial={{ scaleX: 0 }}
-                                    animate={{ scaleX: 1 }}
-                                    transition={{ duration: 3, ease: "linear" }}
-                                    style={{ transformOrigin: 'left' }}
-                                />
-                            )}
-                        </div>
-                    </motion.button>
-                ))}
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-20">
+                <motion.p
+                    className="font-sans-body text-white/50 text-xs tracking-wider"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+                >
+                    ← Desliza para ver más →
+                </motion.p>
+
+                <div className="flex gap-3">
+                    {images.map((_, index) => (
+                        <motion.button
+                            key={index}
+                            onClick={() => goToSlide(index)}
+                            className="group relative"
+                            whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
+                        >
+                            <div className={`relative overflow-hidden rounded-full transition-all duration-500 ${index === currentIndex
+                                ? 'w-16 h-2 bg-gradient-to-r from-brand-icon to-brand-base'
+                                : 'w-2 h-2 bg-white/40 group-hover:bg-white/60'
+                                }`}>
+                            </div>
+                        </motion.button>
+                    ))}
+                </div>
             </div>
         </div>
     );
