@@ -79,13 +79,16 @@ export default function ConfirmarAsistencia() {
                                 <p className="text-brand-base text-2xl font-script mb-4">{INVITACION_DATA.numeroMesa}</p>
 
                                 {/* Resumen de personas */}
-                                <>
-                                    <p className="text-gray-600 text-sm mb-1">Asistentes confirmados:</p>
-                                    <p className="text-brand-base text-2xl font-script mb-4">
-                                        {asistencia === "confirmo" ? INVITACION_DATA.numeroInvitados : numeroPersonas}
-                                        {asistencia === "confirmo" ? " personas" : numeroPersonas === 1 ? " persona" : " personas"}
-                                    </p>
-                                </>
+
+                                <p className="text-gray-600 text-sm mb-1">Asistentes confirmados:</p>
+                                <p className="text-brand-base text-2xl font-script mb-4">
+                                    {asistencia === "confirmo" ? INVITACION_DATA.numeroInvitados : numeroPersonas}
+                                    {asistencia === "confirmo" ? " personas" : numeroPersonas === 1 ? " persona" : " personas"}
+                                </p>
+
+                                <p className="text-gray-600 text-sm mb-1">Fecha del evento:</p>
+                                <p className="text-brand-base text-2xl font-script mb-4">13 de Diciembre del 2025</p>
+
                             </div>
                         )}
 
