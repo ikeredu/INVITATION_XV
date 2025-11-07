@@ -32,10 +32,6 @@ export default function HeroAnimado() {
     const [duration, setDuration] = useState(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    // 💡 'currentSong' ahora es solo 'song'
-    // const currentSong = song; // (Ya no es necesario, usamos 'song' directamente)
-
-    // --- 🎵 MANEJADORES DE AUDIO (SIMPLIFICADOS) ---
 
     // Da Play/Pausa (sin cambios)
     const togglePlay = () => {
@@ -78,44 +74,39 @@ export default function HeroAnimado() {
                 onTimeUpdate={handleTimeUpdate}
             />
 
-            {/* --- 🎵 WIDGET DE MÚSICA (FLOTANTE) --- */}
+            {/* --- WIDGET DE MÚSICA --- */}
             <motion.div
-                className="absolute top-6 right-6 z-30 w-64 p-4 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 shadow-lg"
+                // 💡 Ancho reducido de 'w-64' a 'w-56' (14rem)
+                className="absolute top-6 right-6 z-30 w-56 p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 shadow-lg"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     {/* Cover Art */}
                     <img
                         src={song.coverArt}
                         alt={song.title}
-                        className="w-16 h-16 rounded-md object-cover"
+                        className="w-12 h-12 rounded-md object-cover"
                     />
                     {/* Info */}
                     <div className="flex-1 text-white min-w-0">
                         <h3 className="font-bold text-sm truncate">{song.title}</h3>
                         <p className="text-xs text-white/70 truncate">{song.artist}</p>
                         {/* Tiempo */}
-                        <div className="text-xs text-white/70 mt-2">
+                        <div className="text-xs text-white/70 mt-1">
                             {formatTime(currentTime)} / {formatTime(duration)}
                         </div>
                     </div>
                 </div>
-                {/* 💡 Controles (SIMPLIFICADOS) */}
-                <div className="flex items-center justify-center mt-4 text-white">
-                    {/* 💡 'justify-center' para centrar el único botón */}
-
-                    {/* 💡 Botón 'prevSong' eliminado */}
-
+                {/* Controles */}
+                <div className="flex items-center justify-center mt-3 text-white">
                     <button
                         onClick={togglePlay}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors"
                     >
-                        {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                        {isPlaying ? <Pause size={16} /> : <Play size={16} />}
                     </button>
-
-                    {/* 💡 Botón 'nextSong' eliminado */}
                 </div>
             </motion.div>
 
