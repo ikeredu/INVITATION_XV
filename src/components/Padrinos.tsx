@@ -1,6 +1,6 @@
 import { Heart, Users, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { type EmblaCarouselType } from 'embla-carousel';
 
@@ -31,6 +31,8 @@ const personas = [
 
 export default function Padrinos() {
     const [activeIndex, setActiveIndex] = useState(0);
+    // 💡 NUEVO ESTADO: Usamos este estado simple para forzar la animación en la prop 'key'
+    const [animationKey, setAnimationKey] = useState(0);
 
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center', startIndex: 1 });
 
@@ -41,6 +43,12 @@ export default function Padrinos() {
         onSelect(emblaApi);
         return () => { emblaApi.off('select', onSelect); };
     }, [emblaApi]);
+    
+    // 💡 Función para disparar la animación
+    const triggerPistaAnimation = useCallback(() => {
+        // Incrementamos la key, forzando a Framer Motion a re-ejecutar la animación
+        setAnimationKey(prevKey => prevKey + 1);
+    }, []); 
 
     return (
         <div className="py-12 px-4 overflow-hidden">
@@ -70,12 +78,14 @@ export default function Padrinos() {
                     </p>
                 </motion.div>
 
-                {/* --- Indicador de deslizar (Ahora solo animación de texto) --- */}
+                {/* --- Indicador de deslizar --- */}
                 <motion.div
                     className="text-center mb-4"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
+                    // 💡 Disparamos la animación cada vez que entra en la vista
+                    onViewportEnter={triggerPistaAnimation} 
+                    viewport={{ once: false }} // Permitimos que el componente se re-evalúe
                     transition={{ delay: 0.5, duration: 0.6 }}
                 >
                     <motion.p
@@ -83,25 +93,23 @@ export default function Padrinos() {
                         animate={{ x: [0, 10, 0] }}
                         transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
                     >
-                        ← Desliza las tarjetas para ver más →
+                        ← Deslice las tarjetas para ver más →
                     </motion.p>
                 </motion.div>
 
-                {/* === 💡 SOLUCIÓN: APLICAMOS EL MOVIMIENTO DE PISTA AL CONTENEDOR DEL CARRUSEL === */}
+                {/* === CONTENEDOR DEL CARRUSEL (Pista que se repite) === */}
                 <motion.div
-                    // El carrusel debe aparecer sin desplazamiento, listo para el movimiento
+                    // 💡 Usamos la key para forzar la re-ejecución
+                    key={animationKey} 
                     initial={{ x: 0 }} 
-                    // El array de valores de 'animate' se ejecuta una vez cuando el componente entra en la vista
-                    whileInView={{ x: [0, -10, 0] }}
-                    viewport={{ once: true }}
+                    animate={{ x: [0, -35, 0] }}
                     transition={{ 
-                        // El delay debe ser poco después de que aparezca el texto (0.5s)
-                        delay: 1.0, 
+                        delay: 0.1, // Un delay mínimo para que no se vea el salto
                         duration: 1.5, 
                         ease: "easeOut",
                         repeat: 2, 
                         repeatType: "reverse", 
-                        repeatDelay: 0.3
+                        repeatDelay: 0.5 
                     }}
                 >
                     {/* === El Carrusel Embla === */}
@@ -111,11 +119,11 @@ export default function Padrinos() {
                     >
                         <div className="flex -ml-4 py-4">
                             {personas.map((categoria, index) => {
+                                // ... (JSX de las tarjetas, sin cambios) ...
                                 const IconComponent = categoria.icono;
                                 const isActive = index === activeIndex;
                                 return (
                                     <div key={index} className="flex-shrink-0 w-[85%] sm:w-[70%] md:w-1/3 pl-4">
-                                        {/* El resto de las animaciones de escala/opacidad se mantienen */}
                                         <motion.div
                                             className="h-full"
                                             animate={{

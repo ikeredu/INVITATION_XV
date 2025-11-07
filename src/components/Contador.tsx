@@ -55,9 +55,9 @@ export default function Contador() {
                 <div className="mb-12">
                    
                     <div className="flex justify-center items-end mb-6 space-x-2">
-                        <Quote className="text-brand-icon scale-x-[-1]" size={20} strokeWidth={1} />
-                        
-                        <Quote className="text-brand-icon" size={20} strokeWidth={1} />
+                        <Quote className="text-brand-icon scale-x-[-1]" size={22} strokeWidth={1} />
+
+                        <Quote className="text-brand-icon" size={22} strokeWidth={1} />
                         
                     </div>
 

@@ -98,7 +98,7 @@ export default function Galeria() {
                     animate={{ x: [0, 5, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
                 >
-                    ← Desliza para ver más →
+                    ← Deslice la foto ver más →
                 </motion.p>
 
                 <div className="flex gap-3">

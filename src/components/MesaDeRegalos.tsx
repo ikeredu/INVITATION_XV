@@ -2,44 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Shirt, Sparkles, Footprints, Dog, Palette, ShoppingBag, CardSim } from 'lucide-react';
 
-
 import useEmblaCarousel from 'embla-carousel-react';
-
 import { type EmblaCarouselType } from 'embla-carousel';
 
 
 const wishlistItems = [
-
-    {
-        icon: Shirt,
-        title: "Vestidos",
-        description: "Talla M - Paola ama los vestidos elegantes y coloridos",
-    },
-    {
-        icon: Footprints,
-        title: "Calzado",
-        description: "Talla 25 - Luce bien con tenis o zapatillas en colores neutros",
-    },
-    {
-        icon: ShoppingBag,
-        title: "Bolsas",
-        description: "Bolsas lindas para lucir en cada ocasión",
-    },
-    {
-        icon: Sparkles,
-        title: "Maquillaje",
-        description: "Labiales, sombras, rubores y todo lo que brille ✨",
-    },
-    {
-        icon: Gift,
-        title: "Accesorios",
-        description: "Aretes, collares, pulseras, diademas y más",
-    },
-    {
-        icon: CardSim,
-        title: "Tarjetas de regalo",
-        description: "De cualquier plataforma, o tienda departamental",
-    },
+    // ... (datos sin cambios) ...
+    { icon: Shirt, title: "Vestidos", description: "Talla M - Paola ama los vestidos elegantes y coloridos", },
+    { icon: Footprints, title: "Calzado", description: "Talla 25 - Luce bien con tenis o zapatillas en colores neutros", },
+    { icon: ShoppingBag, title: "Bolsas", description: "Bolsas lindas para lucir en cada ocasión", },
+    { icon: Sparkles, title: "Maquillaje", description: "Labiales, sombras, rubores y todo lo que brille ✨", },
+    { icon: Gift, title: "Accesorios", description: "Aretes, collares, pulseras, diademas y más", },
+    { icon: CardSim, title: "Tarjetas de regalo", description: "De cualquier plataforma, o tienda departamental", },
 ];
 
 const phrases = [
@@ -53,38 +27,33 @@ const phrases = [
 export default function MesaDeRegalos() {
     const [currentPhrase, setCurrentPhrase] = useState(0);
     const [activeIndex, setActiveIndex] = useState(0);
-
-    // --- Lógica de Frases (Se queda igual) ---
+    // 💡 NUEVO ESTADO: Para forzar la re-ejecución de la animación al entrar en vista
+    const [animationKey, setAnimationKey] = useState(0); 
+    
+    // --- Lógica de Frases (Sin cambios) ---
     useEffect(() => {
         const phraseTimer = setInterval(() => {
             setCurrentPhrase((prev) => (prev + 1) % phrases.length);
-        }, 3000);
+        }, 8000);
         return () => clearInterval(phraseTimer);
     }, []);
 
-    // === 3. Configuración de Embla (SIN AUTOPLAY) ===
-    const [emblaRef, emblaApi] = useEmblaCarousel(
-        {
-            loop: true, // ¡Tu 'loop circular'!
-            align: 'center'
-        }
-    );
+    // === Configuración de Embla (sin cambios) ===
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
 
-    // === 4. Lógica para la tarjeta "grande" (Ahora SÍ funciona) ===
+    // === Lógica para la tarjeta "grande" (sin cambios) ===
     useEffect(() => {
         if (!emblaApi) return;
-
-        // Usamos el TIPO 'EmblaCarouselType' (importado de 'embla-carousel')
-        const onSelect = (api: EmblaCarouselType) => {
-            // El método 'selectedScrollSnap()' ahora SÍ existe en este tipo
-            setActiveIndex(api.selectedScrollSnap());
-        };
-
+        const onSelect = (api: EmblaCarouselType) => { setActiveIndex(api.selectedScrollSnap()); };
         emblaApi.on('select', onSelect);
         onSelect(emblaApi);
-
         return () => { emblaApi.off('select', onSelect); };
     }, [emblaApi]);
+
+    // 💡 Función para disparar la animación
+    const triggerPistaAnimation = () => {
+        setAnimationKey(prevKey => prevKey + 1);
+    };
 
     return (
         <div className="py-12 px-4 overflow-hidden">
@@ -103,7 +72,8 @@ export default function MesaDeRegalos() {
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                     >
-                        <Gift className="w-10 h-10 text-brand-base" fill="white" />
+                        {/* 💡 CAMBIO DE ICONO: Usamos fill="currentColor" para el color de la marca */}
+                        <Gift className="w-10 h-10 text-brand-base" fill="currentColor" />
                     </motion.div>
 
                     <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
@@ -118,8 +88,10 @@ export default function MesaDeRegalos() {
                 <motion.div
                     className="text-center mb-4"
                     initial={{ opacity: 0 }}
+                    // 💡 Disparamos la animación del carrusel inmediatamente después de esta aparición
+                    onViewportEnter={triggerPistaAnimation} 
                     whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: false }} // Permitimos que se active cada vez
                     transition={{ delay: 0.5, duration: 0.6 }}
                 >
                     <motion.p
@@ -127,57 +99,71 @@ export default function MesaDeRegalos() {
                         animate={{ x: [0, 10, 0] }}
                         transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
                     >
-                        ← Desliza para ver más →
+                        ← Deslice la tarjeta ver más →
                     </motion.p>
                 </motion.div>
 
-                {/* --- El Carrusel Embla (Manual e Infinito) --- */}
-                <div
-                    // 'overflow-hidden' QUITA LA BARRA FEA
-                    className="overflow-hidden cursor-grab active:cursor-grabbing"
-                    ref={emblaRef}
+                {/* === 💡 APLICAMOS LA ANIMACIÓN AL CONTENEDOR DEL CARRUSEL === */}
+                <motion.div
+                    key={animationKey} // 💡 Usamos la key para forzar la re-ejecución
+                    initial={{ x: 0 }} 
+                    animate={{ x: [0, -35, 0] }} // El movimiento de pista
+                    transition={{ 
+                        delay: 0.1, // Un delay mínimo para que no se vea el salto
+                        duration: 1.5, 
+                        ease: "easeOut",
+                        repeat: 2, // 3 ejecuciones en total
+                        repeatType: "reverse", 
+                        repeatDelay: 0.5 
+                    }}
                 >
-                    <div className="flex -ml-4 py-4">
-                        {wishlistItems.map((item, index) => {
-                            const IconComponent = item.icon;
-                            const isActive = index === activeIndex;
-                            return (
-                                <div key={index} className="flex-shrink-0 w-[85%] sm:w-[70%] md:w-1/3 pl-4">
-                                    {/* === 6. El efecto "scale" (más grande) === */}
-                                    <motion.div
-                                        className="h-full"
-                                        animate={{
-                                            scale: isActive ? 1.05 : 0.95,
-                                            opacity: isActive ? 1 : 0.7
-                                        }}
-                                        transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-                                    >
-                                        <div className="bg-white rounded-3xl p-8 shadow-xl h-full border border-brand-border flex flex-col items-center text-center space-y-4">
-                                            <motion.div
-                                                className="flex justify-center mb-4 relative z-10"
-                                                animate={{ rotate: [0, 25, -25, 0] }}
-                                                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
-                                            >
-                                                <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-light/50 rounded-full">
+                    {/* --- El Carrusel Embla (Manual e Infinito) --- */}
+                    <div
+                        className="overflow-hidden cursor-grab active:cursor-grabbing"
+                        ref={emblaRef}
+                    >
+                        <div className="flex -ml-4 py-4">
+                            {wishlistItems.map((item, index) => {
+                                const IconComponent = item.icon;
+                                const isActive = index === activeIndex;
+                                return (
+                                    <div key={index} className="flex-shrink-0 w-[85%] sm:w-[70%] md:w-1/3 pl-4">
+                                        <motion.div
+                                            className="h-full"
+                                            animate={{
+                                                scale: isActive ? 1.05 : 0.95,
+                                                opacity: isActive ? 1 : 0.7
+                                            }}
+                                            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                                        >
+                                            <div className="bg-white rounded-3xl p-8 shadow-xl h-full border border-brand-border flex flex-col items-center text-center space-y-4">
+                                                
+                                                {/* 💡 CONTENEDOR DEL ÍCONO CON ANIMACIÓN DE FLOTACIÓN (MANTENIDA) */}
+                                                <motion.div
+                                                    className="inline-flex items-center justify-center w-20 h-20 bg-brand-light/50 rounded-full"
+                                                    animate={{ y: [0, -8, 0] }}
+                                                    transition={{ duration: 4, repeat: Infinity, repeatType: "reverse", delay: index * 0.3 }}
+                                                >
                                                     <IconComponent className="w-12 h-12 text-brand-base" />
-                                                </div>
-                                            </motion.div>
-                                            {/*  */}
-                                            <h3 className="text-brand-base text-2xl font-script">
-                                                {item.title}
-                                            </h3>
-                                            <p className="text-gray-600 text-sm font-sans-body flex-grow">
-                                                {item.description}
-                                            </p>
-                                        </div>
-                                    </motion.div>
-                                </div>
-                            );
-                        })}
+                                                </motion.div>
+                                                {/* --- FIN EFECTO FLOTACIÓN --- */}
+                                                
+                                                <h3 className="text-brand-base text-2xl font-script">
+                                                    {item.title}
+                                                </h3>
+                                                <p className="text-gray-600 text-sm font-sans-body flex-grow">
+                                                    {item.description}
+                                                </p>
+                                            </div>
+                                        </motion.div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
+                </motion.div>
 
-                {/* --- Tarjeta de Frases Rotativas (Se queda igual) --- */}
+                {/* --- Tarjeta de Frases Rotativas (Sin cambios) --- */}
                 <div className="text-center mt-12 max-w-md mx-auto relative h-24 flex items-center justify-center">
                     <AnimatePresence mode="wait">
                         <motion.div
