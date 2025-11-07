@@ -73,7 +73,7 @@ export default function MesaDeRegalos() {
                         transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                     >
                         {/* 💡 CAMBIO DE ICONO: Usamos fill="currentColor" para el color de la marca */}
-                        <Gift className="w-10 h-10 text-brand-base" fill="currentColor" />
+                        <Gift className="w-10 h-10 text-brand-base" />
                     </motion.div>
 
                     <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
