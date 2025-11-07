@@ -141,7 +141,7 @@ export default function Padrinos() {
 
                                             <motion.div
                                                 className="flex justify-center mb-4 relative z-10"
-                                                animate={{ rotate: [0, 5, -5, 0] }}
+                                                animate={{ rotate: [0, 25, -25, 0] }}
                                                 transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
                                             >
                                                 <div className={`w-20 h-20 bg-gradient-to-br ${categoria.gradienteIcono} rounded-full flex items-center justify-center shadow-lg`}>

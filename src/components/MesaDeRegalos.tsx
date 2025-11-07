@@ -153,9 +153,16 @@ export default function MesaDeRegalos() {
                                         transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                                     >
                                         <div className="bg-white rounded-3xl p-8 shadow-xl h-full border border-brand-border flex flex-col items-center text-center space-y-4">
-                                            <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-light/50 rounded-full">
-                                                <IconComponent className="w-12 h-12 text-brand-base" />
-                                            </div>
+                                            <motion.div
+                                                className="flex justify-center mb-4 relative z-10"
+                                                animate={{ rotate: [0, 25, -25, 0] }}
+                                                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
+                                            >
+                                                <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-light/50 rounded-full">
+                                                    <IconComponent className="w-12 h-12 text-brand-base" />
+                                                </div>
+                                            </motion.div>
+                                            {/*  */}
                                             <h3 className="text-brand-base text-2xl font-script">
                                                 {item.title}
                                             </h3>
