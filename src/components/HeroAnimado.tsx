@@ -95,7 +95,7 @@ export default function HeroAnimado() {
                         <p className="text-xs text-white/70 truncate">{song.artist}</p>
                         {/* Tiempo */}
                         <div className="text-xs text-white/70 mt-1">
-                            {formatTime(currentTime)} / {formatTime(duration)}
+                            {formatTime(currentTime)} / 03:58
                         </div>
                     </div>
                 </div>

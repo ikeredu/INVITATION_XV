@@ -8,6 +8,7 @@ import Padrinos from "../components/Padrinos.tsx";
 import DressCode from "../components/DressCode.tsx";
 import MesaDeRegalos from "../components/MesaDeRegalos.tsx";
 import Galeria from "../components/Galeria.tsx";
+import ConfirmarAsistencia from "../components/ConfirmarAsistencia.tsx";
 ---
 
 <Layout title="Te invito a mis xv años">
@@ -27,13 +28,10 @@ import Galeria from "../components/Galeria.tsx";
 		}
 		<section class="bg-brand-light py-16">
 			<div class="flex flex-col gap-12">
-				{/* Componente 1: Contador */}
 				<Contador client:visible />
 
-				{/* Componente 2: Ubicación */}
 				<Ubicacion client:visible />
 
-				{/* Componente 3: Personas especiales */}
 				<Padrinos client:visible />
 
 				<DressCode client:visible />
@@ -43,9 +41,10 @@ import Galeria from "../components/Galeria.tsx";
 		</section>
 		{/* --- GALERÍA (Nueva Experiencia Full-Screen) --- */}
 		<section>
-			{/* === 🔴 CORRECCIÓN: Volvemos a client:load === */}
-			{/* (Ahora podemos porque ya no hay error de 'window') */}
 			<Galeria client:load />
+		</section>
+		<section class="bg-brand-light py-16">
+			<ConfirmarAsistencia client:visible />
 		</section>
 	</main>
 </Layout>

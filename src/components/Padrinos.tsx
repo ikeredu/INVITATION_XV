@@ -25,7 +25,7 @@ const personas = [
         icono: Heart,
         personas: [
             { nombre: "Sra. Elizabeth Cruz Hernández", rol: "" },
-            { nombre: "Mtro. Royder Méndez Frank", rol: "" }
+            { nombre: "Prof. Royder Méndez Frank", rol: "" }
         ],
         gradienteIcono: "from-brand-base to-brand-icon",
         gradienteBg: "from-brand-light/20 to-brand-light/50"

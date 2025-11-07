@@ -35,14 +35,14 @@ export default function DressCode() {
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                     >
-                        <Palette className="w-10 h-10 text-brand-base" fill="white" />
+                        <Palette className="w-10 h-10 text-brand-base" />
                     </motion.div>
 
                     <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
                         Colores reservados
                     </h2>
                     <p className="text-brand-base/80 px-4 font-sans-body">
-                        Los colores fiucsa y afines están reservados exclusivamente para la quinceañera
+                        Los colores fiucsa y afines en la vestimenta, están reservados exclusivamente para la quinceañera
                     </p>
                 </motion.div>
 

@@ -59,7 +59,7 @@ export default function Galeria() {
             <Sparkles count={70} />
 
             <div className="text-center mb-8 z-20">
-                <h2 className="text-4xl font-script text-white/90">Galería</h2>
+                <h2 className="text-4xl font-script text-white/90">Galería de fotos, de nuestra hermosa quinceañera</h2>
             </div>
 
             <div className="relative z-10 w-[70vw] h-[60vh] md:w-[60vw] md:h-[70vh] max-w-4xl max-h-[700px] rounded-3xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]">

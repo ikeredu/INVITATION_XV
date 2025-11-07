@@ -49,7 +49,7 @@ export default function Ubicacion() {
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                     >
-                        <MapPin className="w-10 h-10 text-brand-base" fill="white" />
+                        <MapPin className="w-10 h-10 text-brand-base" />
                     </motion.div>
 
                     <h2 className="text-brand-dark text-4xl mb-2 px-4 font-script">
