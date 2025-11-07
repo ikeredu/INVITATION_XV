@@ -2,18 +2,18 @@
 
 // 💡 Importamos los hooks de React y los iconos necesarios
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Play, Pause } from 'lucide-react'; // 💡 Ya no necesitamos SkipBack/SkipForward
+import { ChevronDown, Play, Pause } from 'lucide-react'; 
 import { motion } from 'framer-motion';
 
 
 const song = {
-    src: '/music/cancion1.mp3',      // Ruta en la carpeta /public
-    title: 'Say Yes To Heaven',              // Título que se mostrará
-    artist: 'Lana Del Rey',          // Artista que se mostrará
-    coverArt: '/images/cover1.webp' // Ruta a la carátula en /public
+    src: '/music/cancion1.mp3', 
+    title: 'Say Yes To Heaven', 
+    artist: 'Lana Del Rey', 
+    coverArt: '/images/cover1.webp' 
 };
 
-// 2. Función para formatear el tiempo (sin cambios)
+// ... (formatTime function sin cambios) ...
 const formatTime = (seconds: number) => {
     if (isNaN(seconds)) return '00:00';
     const minutes = Math.floor(seconds / 60);
@@ -21,19 +21,14 @@ const formatTime = (seconds: number) => {
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 };
 
-// --- Componente Principal ---
-
 export default function HeroAnimado() {
 
-    // --- 🎵 ESTADO DEL REPRODUCTOR (SIMPLIFICADO) ---
     const [isPlaying, setIsPlaying] = useState(false);
-    // 💡 'currentSongIndex' ya no es necesario
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-
-    // Da Play/Pausa (sin cambios)
+    // ... (togglePlay, handleLoadedMetadata, handleTimeUpdate sin cambios) ...
     const togglePlay = () => {
         const audioElement = audioRef.current;
         if (!audioElement) return;
@@ -46,20 +41,13 @@ export default function HeroAnimado() {
         setIsPlaying(!isPlaying);
     };
 
-    // 💡 'nextSong' y 'prevSong' eliminados
-    // 💡 'handleSongEnd' eliminado (ahora usamos 'loop' en el tag de audio)
-
-    // Se dispara cuando los metadatos (duración) cargan (sin cambios)
     const handleLoadedMetadata = () => {
         if (audioRef.current) setDuration(audioRef.current.duration);
     };
 
-    // Se dispara mientras la canción se reproduce para actualizar el tiempo (sin cambios)
     const handleTimeUpdate = () => {
         if (audioRef.current) setCurrentTime(audioRef.current.currentTime);
     };
-
-    // 💡 'useEffect' para cambiar de canción eliminado
 
 
     return (
@@ -68,50 +56,64 @@ export default function HeroAnimado() {
             {/* --- 🎵 ELEMENTO DE AUDIO (OCULTO Y EN LOOP) --- */}
             <audio
                 ref={audioRef}
-                src={song.src} // 💡 Usa la canción única
-                loop // 💡 ¡AQUÍ ESTÁ LA MAGIA! Esto hace que se repita sola
+                src={song.src}
+                loop
                 onLoadedMetadata={handleLoadedMetadata}
                 onTimeUpdate={handleTimeUpdate}
             />
 
-            {/* --- WIDGET DE MÚSICA --- */}
+            {/* --- WIDGET DE MÚSICA Y SU CONTENEDOR --- */}
             <motion.div
-                // 💡 Ancho reducido de 'w-64' a 'w-56' (14rem)
-                className="absolute top-6 right-6 z-30 w-56 p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 shadow-lg"
+                // 💡 Aseguramos que el contenedor del widget sea relativo para poder posicionar el Hint
+                className="absolute top-6 right-6 z-30" 
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             >
-                <div className="flex items-center gap-3">
-                    {/* Cover Art */}
-                    <img
-                        src={song.coverArt}
-                        alt={song.title}
-                        className="w-12 h-12 rounded-md object-cover"
-                    />
-                    {/* Info */}
-                    <div className="flex-1 text-white min-w-0">
-                        <h3 className="font-bold text-sm truncate">{song.title}</h3>
-                        <p className="text-xs text-white/70 truncate">{song.artist}</p>
-                        {/* Tiempo */}
-                        <div className="text-xs text-white/70 mt-1">
-                            {formatTime(currentTime)} / 03:58
+                {/* 💡 1. EL WIDGET FLOTANTE */}
+                <div className="w-56 p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
+                    <div className="flex items-center gap-3">
+                        {/* Cover Art */}
+                        <img
+                            src={song.coverArt}
+                            alt={song.title}
+                            className="w-12 h-12 rounded-md object-cover"
+                        />
+                        {/* Info */}
+                        <div className="flex-1 text-white min-w-0">
+                            <h3 className="font-bold text-sm truncate">{song.title}</h3>
+                            <p className="text-xs text-white/70 truncate">{song.artist}</p>
+                            {/* Tiempo */}
+                            <div className="text-xs text-white/70 mt-1">
+                                {formatTime(currentTime)} / 03:29
+                            </div>
                         </div>
                     </div>
+                    {/* Controles */}
+                    <div className="flex items-center justify-center mt-3 text-white">
+                        <button
+                            onClick={togglePlay}
+                            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                        >
+                            {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+                        </button>
+                    </div>
                 </div>
-                {/* Controles */}
-                <div className="flex items-center justify-center mt-3 text-white">
-                    <button
-                        onClick={togglePlay}
-                        className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                
+                {/* 💡 2. EL HINT (Se muestra solo si NO está sonando) */}
+                {!isPlaying && (
+                    <motion.p
+                        className="text-white/80 text-xs font-sans-body mt-2 text-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 1, 0] }} // Parpadeo
+                        transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }}
                     >
-                        {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-                    </button>
-                </div>
+                        Presione play para escuchar
+                    </motion.p>
+                )}
             </motion.div>
 
             {/* --- TU CÓDIGO DE HERO EXISTENTE --- */}
-
             {/* Background Image */}
             <div className="absolute inset-0">
                 <img
@@ -120,10 +122,8 @@ export default function HeroAnimado() {
                     className="w-full h-full object-cover"
                 />
             </div>
-
             {/* Overlay for better text readability */}
             <div className="absolute inset-0 bg-black/10"></div>
-
             {/* Main Content with animations */}
             <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
                 <div className="text-center space-y-8">
