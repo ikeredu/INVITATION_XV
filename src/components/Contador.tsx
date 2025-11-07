@@ -110,6 +110,10 @@ export default function Contador() {
                             <div className="text-sm text-brand-subtext mt-3">Segundos</div>
                         </div>
                     </div>
+
+                    <h3 className="text-center text-brand-base mb-6 tracking-wide font-sans-body font-light uppercase text-sm mt-4">
+                        13 de Diciembre del 2025
+                    </h3>
                 </div>
             </div>
         </div>
