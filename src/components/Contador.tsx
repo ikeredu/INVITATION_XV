@@ -53,8 +53,12 @@ export default function Contador() {
 
                 {/* --- 1. El Texto de Invitación --- */}
                 <div className="mb-12">
-                    <div className="flex justify-center mb-6">
-                        <Quote className="text-brand-icon" size={40} strokeWidth={1} />
+                   
+                    <div className="flex justify-center items-end mb-6 space-x-2">
+                        <Quote className="text-brand-icon scale-x-[-1]" size={20} strokeWidth={1} />
+                        
+                        <Quote className="text-brand-icon" size={20} strokeWidth={1} />
+                        
                     </div>
 
                     <p className="text-xl md:text-2xl text-brand-dark leading-relaxed font-script mb-8">
