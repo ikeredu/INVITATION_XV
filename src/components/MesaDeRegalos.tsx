@@ -114,7 +114,7 @@ export default function MesaDeRegalos() {
                     </p>
                 </motion.div>
 
-                {/* === 5. Indicador "Desliza" (Restaurado) === */}
+                {/* === 5. Indicador "Desliza" === */}
                 <motion.div
                     className="text-center mb-4"
                     initial={{ opacity: 0 }}
