@@ -1,0 +1,30 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Invitación Inválida">
+    <main
+        class="flex flex-col items-center justify-center min-h-screen bg-brand-light text-center px-4"
+    >
+        <div
+            class="bg-white rounded-2xl shadow-lg p-8 border border-brand-border max-w-md mx-auto"
+        >
+            <h1 class="text-brand-dark text-4xl mb-4 font-script">
+                ¡Lo Sentimos!
+            </h1>
+            <p class="text-gray-700 text-lg mb-6 font-sans-body">
+                El enlace de tu invitación no es válido.
+            </p>
+            <p class="text-gray-700 text-md mb-8 font-sans-body">
+                Por favor, contacta con la familia Méndez Cruz para más
+                información.
+            </p>
+            <a
+                href="/"
+                class="inline-block bg-brand-base hover:bg-brand-dark text-white py-3 px-6 rounded-xl shadow-lg transition-all duration-300 text-base font-sans-body"
+            >
+                Volver al Inicio
+            </a>
+        </div>
+    </main>
+</Layout>

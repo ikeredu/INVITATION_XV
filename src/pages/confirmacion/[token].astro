@@ -27,35 +27,21 @@ if (token) {
         .eq("token_secreto", token)
         .single();
 
-    // Mostramos lo que Supabase nos devuelve.
-    console.log("[DEBUG] Respuesta de Supabase (data):", data);
-    console.log("[DEBUG] Respuesta de Supabase (error):", error);
-
     if (error && error.code !== "PGRST116") {
-        // PGRST116 = no rows found
-        console.error(
-            `[ERROR] Ocurrió un error al consultar Supabase: ${error.message}`,
-        );
+        console.error(`[ERROR] Ocurrió un error al consultar Supabase: ${error.message}`);
     }
 
-    if (data) {
-        console.log(
-            `[SUCCESS] Invitado encontrado: ${data.nombre_invitado_principal}`,
-        );
-        invitado = data;
-    } else {
-        console.warn(
-            "[WARN] No se encontró data para el token. Causas posibles:",
-        );
-        console.warn("1. El token no existe en la tabla 'invitados'.");
-        console.warn(
-            "2. La Política de Seguridad (RLS) de la tabla 'invitados' no permite la lectura (SELECT) para el rol 'anon'.",
-        );
-    }
-} else {
-    console.log("[DEBUG] No se proporcionó token en la URL.");
+    invitado = data;
 }
-console.log("--- FIN DE BÚSQUEDA ---\n");
+
+// Si después de la búsqueda no se encontró un invitado, redirigimos a la página de error.
+console.log('[DEBUG] Valor de "invitado" antes de la comprobación de redirección:', invitado);
+if (!invitado) {
+    console.log('[DEBUG] ¡ATENCIÓN! Entrando al bloque IF para redirigir. El invitado es nulo.');
+    return Astro.redirect('/error/invalid-invitation');
+}
+console.log('[DEBUG] El invitado fue encontrado. Se procede a renderizar la página.');
+---
 ---
 
 {/* El título de la página puede ser dinámico si se encontró un invitado */}
