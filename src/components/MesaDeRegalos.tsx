@@ -28,13 +28,13 @@ export default function MesaDeRegalos() {
     const [currentPhrase, setCurrentPhrase] = useState(0);
     const [activeIndex, setActiveIndex] = useState(0);
     // 💡 NUEVO ESTADO: Para forzar la re-ejecución de la animación al entrar en vista
-    const [animationKey, setAnimationKey] = useState(0); 
-    
+    const [animationKey, setAnimationKey] = useState(0);
+
     // --- Lógica de Frases (Sin cambios) ---
     useEffect(() => {
         const phraseTimer = setInterval(() => {
             setCurrentPhrase((prev) => (prev + 1) % phrases.length);
-        }, 8000);
+        }, 5000);
         return () => clearInterval(phraseTimer);
     }, []);
 
@@ -89,7 +89,7 @@ export default function MesaDeRegalos() {
                     className="text-center mb-4"
                     initial={{ opacity: 0 }}
                     // 💡 Disparamos la animación del carrusel inmediatamente después de esta aparición
-                    onViewportEnter={triggerPistaAnimation} 
+                    onViewportEnter={triggerPistaAnimation}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: false }} // Permitimos que se active cada vez
                     transition={{ delay: 0.5, duration: 0.6 }}
@@ -106,15 +106,15 @@ export default function MesaDeRegalos() {
                 {/* === 💡 APLICAMOS LA ANIMACIÓN AL CONTENEDOR DEL CARRUSEL === */}
                 <motion.div
                     key={animationKey} // 💡 Usamos la key para forzar la re-ejecución
-                    initial={{ x: 0 }} 
+                    initial={{ x: 0 }}
                     animate={{ x: [0, -35, 0] }} // El movimiento de pista
-                    transition={{ 
+                    transition={{
                         delay: 0.1, // Un delay mínimo para que no se vea el salto
-                        duration: 1.5, 
+                        duration: 1.5,
                         ease: "easeOut",
                         repeat: 2, // 3 ejecuciones en total
-                        repeatType: "reverse", 
-                        repeatDelay: 0.5 
+                        repeatType: "reverse",
+                        repeatDelay: 0.5
                     }}
                 >
                     {/* --- El Carrusel Embla (Manual e Infinito) --- */}
@@ -137,7 +137,7 @@ export default function MesaDeRegalos() {
                                             transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                                         >
                                             <div className="bg-white rounded-3xl p-8 shadow-xl h-full border border-brand-border flex flex-col items-center text-center space-y-4">
-                                                
+
                                                 {/* 💡 CONTENEDOR DEL ÍCONO CON ANIMACIÓN DE FLOTACIÓN (MANTENIDA) */}
                                                 <motion.div
                                                     className="inline-flex items-center justify-center w-20 h-20 bg-brand-light/50 rounded-full"
@@ -147,7 +147,7 @@ export default function MesaDeRegalos() {
                                                     <IconComponent className="w-12 h-12 text-brand-base" />
                                                 </motion.div>
                                                 {/* --- FIN EFECTO FLOTACIÓN --- */}
-                                                
+
                                                 <h3 className="text-brand-base text-2xl font-script">
                                                     {item.title}
                                                 </h3>

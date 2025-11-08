@@ -23,9 +23,7 @@ console.log(`[DEBUG] Token recibido de la URL: ${token}`);
 if (token) {
     const { data, error } = await supabaseAnonClient
         .from("invitados")
-        .select(
-            "nombre_invitado_principal, num_acompanantes_permitidos, token_secreto, mesas(nombre_mesa)",
-        )
+        .select('nombre_invitado_principal, num_acompanantes_permitidos, token_secreto, mesas(nombre_mesa), confirmado, num_asistentes_confirmados')
         .eq("token_secreto", token)
         .single();
 

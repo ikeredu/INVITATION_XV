@@ -39,7 +39,7 @@ export default function InvitacionPrincipal() {
                         XV Años
                     </h2>
                     <h1 className="text-7xl md:text-8xl font-script drop-shadow-lg">
-                        Yeri Paola
+                        Yeri Paola Méndez Cruz
                     </h1>
                 </motion.div>
 
