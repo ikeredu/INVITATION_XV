@@ -1,0 +1,94 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import HeroAnimado from "../../components/HeroAnimado.tsx";
+import InvitationPrincipal from "../../components/InvitationPrincipal.tsx";
+import Contador from "../../components/Contador.tsx";
+import Ubicacion from "../../components/Ubicacion.tsx";
+import Padrinos from "../../components/Padrinos.tsx";
+import DressCode from "../../components/DressCode.tsx";
+import MesaDeRegalos from "../../components/MesaDeRegalos.tsx";
+import Galeria from "../../components/Galeria.tsx";
+import ConfirmarAsistencia from "../../components/ConfirmarAsistencia.tsx";
+import { supabaseAnonClient } from "../../utils/supabaseServer";
+
+// --- Lógica del Servidor (SSR) con DEBUGGING ---
+const { token } = Astro.params;
+let invitado = null;
+
+// Imprimimos en la consola del servidor (donde corres `npm run dev`) para depurar.
+console.log("\n--- INICIANDO BÚSQUEDA DE INVITADO ---");
+console.log(`[DEBUG] Token recibido de la URL: ${token}`);
+
+if (token) {
+    const { data, error } = await supabaseAnonClient
+        .from("invitados")
+        .select(
+            "nombre_invitado_principal, num_acompanantes_permitidos, token_secreto, mesas(nombre_mesa)",
+        )
+        .eq("token_secreto", token)
+        .single();
+
+    // Mostramos lo que Supabase nos devuelve.
+    console.log("[DEBUG] Respuesta de Supabase (data):", data);
+    console.log("[DEBUG] Respuesta de Supabase (error):", error);
+
+    if (error && error.code !== "PGRST116") {
+        // PGRST116 = no rows found
+        console.error(
+            `[ERROR] Ocurrió un error al consultar Supabase: ${error.message}`,
+        );
+    }
+
+    if (data) {
+        console.log(
+            `[SUCCESS] Invitado encontrado: ${data.nombre_invitado_principal}`,
+        );
+        invitado = data;
+    } else {
+        console.warn(
+            "[WARN] No se encontró data para el token. Causas posibles:",
+        );
+        console.warn("1. El token no existe en la tabla 'invitados'.");
+        console.warn(
+            "2. La Política de Seguridad (RLS) de la tabla 'invitados' no permite la lectura (SELECT) para el rol 'anon'.",
+        );
+    }
+} else {
+    console.log("[DEBUG] No se proporcionó token en la URL.");
+}
+console.log("--- FIN DE BÚSQUEDA ---\n");
+---
+
+{/* El título de la página puede ser dinámico si se encontró un invitado */}
+<Layout
+    title={`Invitación para ${invitado ? invitado.nombre_invitado_principal : "mis XV años"}`}
+>
+    <main>
+        {/* --- PORTADA (Pantallas completas) --- */}
+        <HeroAnimado client:load />
+        <section id="contenido">
+            <InvitationPrincipal client:visible />
+        </section>
+
+        {/* --- INFORMACIÓN (Flujo Único) --- */}
+        <section class="bg-brand-light py-16">
+            <div class="flex flex-col gap-12">
+                <Contador client:visible />
+                <Ubicacion client:visible />
+                <Padrinos client:visible />
+                <DressCode client:visible />
+                <MesaDeRegalos client:visible />
+            </div>
+        </section>
+
+        {/* --- GALERÍA (Nueva Experiencia Full-Screen) --- */}
+        <section>
+            <Galeria client:load />
+        </section>
+
+        {/* --- CONFIRMACIÓN DE ASISTENCIA --- */}
+        <section class="bg-brand-light py-16">
+            <ConfirmarAsistencia client:visible invitado={invitado} />
+        </section>
+    </main>
+</Layout>

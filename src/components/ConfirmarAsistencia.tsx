@@ -2,34 +2,54 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-// 💡 1. IMPORTACIÓN COMPLETA Y CORRECTA
 import { Pencil, Heart, CheckCircle2, Plus, Minus, ClipboardList, Check } from "lucide-react";
 import { toast } from "sonner";
 import { SparklesBurst } from "./SparklesBurst";
 
-// Datos estáticos (sin cambios)
-const INVITACION_DATA = {
-    nombreFamilia: "Familia García López",
-    numeroMesa: "Mesa 7",
-    numeroInvitados: 5,
-};
+// Definición de las Props que este componente recibirá de la ruta dinámica de Astro
+// La prop `invitado` es ahora opcional para que el componente no falle en la página de inicio.
+interface ConfirmarAsistenciaProps {
+    invitado?: {
+        nombre_invitado_principal: string;
+        num_acompanantes_permitidos: number;
+        token_secreto: string;
+        mesas: { // Supabase devuelve las relaciones como un array
+            nombre_mesa: string;
+        }[] | null; // Se espera un array de mesas
+    } | null;
+}
 
-// Color Fucsia
+// Color Fucsia (Manteniendo tu estilo)
 const fuchsiaColor = "#C71585";
 
-export default function ConfirmarAsistencia() {
+// El componente ahora recibe un objeto `invitado` opcional
+export default function ConfirmarAsistencia({ invitado }: ConfirmarAsistenciaProps) {
+    // --- Valores por Defecto ---
+    // Mapeamos los nombres correctos de la base de datos a las variables del componente.
+    const nombreFamilia = invitado?.nombre_invitado_principal ?? "Familia Invitada";
+    // El número de invitados se toma directamente del valor en la base de datos.
+    const numeroInvitados = invitado?.num_acompanantes_permitidos ?? 1;
+    // Accedemos a la primera mesa del array, si existe.
+    const numeroMesa = invitado?.mesas?.[0]?.nombre_mesa ?? null;
+    const token = invitado?.token_secreto ?? "";
+
+
+    // El estado inicial del contador se basa en el número máximo de invitados permitidos, 
     const [asistencia, setAsistencia] = useState<"confirmo" | "menos-personas" | "no-asistire">("confirmo");
-    const [numeroPersonas, setNumeroPersonas] = useState(INVITACION_DATA.numeroInvitados);
+    // 💡 Usa numeroInvitados de la prop para el estado inicial
+    const [numeroPersonas, setNumeroPersonas] = useState(numeroInvitados);
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // --- Lógica de handlers (COMPLETA) ---
     const handleIncrement = () => {
-        if (numeroPersonas < INVITACION_DATA.numeroInvitados) {
+        // Usa la prop numeroInvitados como el límite máximo
+        if (numeroPersonas < numeroInvitados) {
             setNumeroPersonas(numeroPersonas + 1);
         }
     };
     const handleDecrement = () => {
+        // Mínimo de 1 persona (el invitado principal)
         if (numeroPersonas > 1) {
             setNumeroPersonas(numeroPersonas - 1);
         }
@@ -38,19 +58,35 @@ export default function ConfirmarAsistencia() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // 💡 Lógica de envío REAL (SÓLO EL CÓDIGO TEMPORAL SOLICITADO)
+        let asistentesFinales;
+        if (asistencia === "no-asistire") {
+            asistentesFinales = 0;
+        } else if (asistencia === "confirmo") {
+            asistentesFinales = numeroInvitados;
+        } else {
+            asistentesFinales = numeroPersonas;
+        }
+
+        // Placeholder de Toast y estado local (Tu lógica actual, sin el fetch real aún)
         setIsSubmitting(true);
-        toast.success("¡Confirmación enviada con éxito!");
+        toast.success(`Confirmación enviada: ${asistentesFinales} asistentes. (SIMULADO)`);
 
         setTimeout(() => {
             setSubmitted(true);
             setIsSubmitting(false);
         }, 2000);
+
+        // 💡 NOTA: El siguiente paso será reemplazar este setTimeout con el fetch(POST) a /api/rsvp.
     };
 
-    // --- 1. VISTA DE "GRACIAS" (CORREGIDA TS) ---
+    // --- 1. VISTA DE "GRACIAS" ---
     if (submitted) {
+        const asistentesFinales = asistencia === "confirmo" ? numeroInvitados : numeroPersonas;
+
         return (
-            <div className="py-12 px-8 text-center min-h-screen">
+            // 💡 Se eliminan los estilos de min-h-screen para correcta integración en el layout principal
+            <div className="py-12 px-8 text-center">
                 <div className="max-w-lg mx-auto w-full">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
@@ -70,20 +106,18 @@ export default function ConfirmarAsistencia() {
                             {asistencia === "no-asistire" ? "Lamentamos que no puedas acompañarnos." : "Tu confirmación ha sido recibida. ¡Nos vemos pronto!"}
                         </p>
 
-                        {/* 💡 TS FIX: Uso de chequeo explícito para el resumen (sin errores) */}
+                        {/* Resumen Final (Usa las props) */}
                         {(asistencia === "confirmo" || asistencia === "menos-personas") && (
                             <div className="bg-white rounded-2xl p-6 mb-8 shadow-lg border border-brand-border text-left">
                                 <p className="text-gray-600 text-sm mb-1">Familia:</p>
-                                <p className="text-brand-base text-2xl font-script mb-4">{INVITACION_DATA.nombreFamilia}</p>
-                                <p className="text-gray-600 text-sm mb-1">Mesa:</p>
-                                <p className="text-brand-base text-2xl font-script mb-4">{INVITACION_DATA.numeroMesa}</p>
+                                <p className="text-brand-base text-2xl font-script mb-4">{nombreFamilia}</p>
 
-                                {/* Resumen de personas */}
+                                <p className="text-gray-600 text-sm mb-1">Mesa:</p>
+                                <p className="text-brand-base text-2xl font-script mb-4">{numeroMesa || 'Pendiente de Asignación'}</p>
 
                                 <p className="text-gray-600 text-sm mb-1">Asistentes confirmados:</p>
                                 <p className="text-brand-base text-2xl font-script mb-4">
-                                    {asistencia === "confirmo" ? INVITACION_DATA.numeroInvitados : numeroPersonas}
-                                    {asistencia === "confirmo" ? " personas" : numeroPersonas === 1 ? " persona" : " personas"}
+                                    {asistentesFinales} {asistentesFinales === 1 ? "persona" : "personas"}
                                 </p>
 
                                 <p className="text-gray-600 text-sm mb-1">Fecha del evento:</p>
@@ -91,14 +125,6 @@ export default function ConfirmarAsistencia() {
 
                             </div>
                         )}
-
-                        {/* <button
-                            type="button"
-                            onClick={() => setSubmitted(false)}
-                            className="bg-brand-base hover:bg-brand-dark text-white px-8 py-4 rounded-xl shadow-lg h-auto font-sans-body text-base transition-colors"
-                        >
-                            Editar ió
-                        </button> */}
                     </motion.div>
                 </div>
             </div>
@@ -107,12 +133,13 @@ export default function ConfirmarAsistencia() {
 
     // --- 2. VISTA DE FORMULARIO ---
     return (
-        <div className="py-12 px-8 text-center relative min-h-screen">
+        // 💡 Se eliminan los estilos de min-h-screen para correcta integración en el layout principal
+        <div className="py-12 px-8 text-center relative">
             {isSubmitting && <SparklesBurst />}
 
             <div className="max-w-lg mx-auto w-full relative z-20">
 
-                {/* Header (Armonizado) */}
+                {/* Header */}
                 <motion.div
                     className="text-center mb-8"
                     initial={{ opacity: 0, y: -20 }}
@@ -141,15 +168,15 @@ export default function ConfirmarAsistencia() {
                 >
                     <form onSubmit={handleSubmit} className="space-y-6 text-left">
 
-                        {/* Datos de la Invitación (Armonizado) */}
+                        {/* Datos de la Invitación (Personalizados con Props) */}
                         <div className="bg-brand-light/50 rounded-2xl p-6 border border-brand-border">
                             <div className="text-center mb-3">
                                 <p className="text-gray-600 text-sm mb-1">Invitación para:</p>
-                                <h2 className="text-brand-base text-2xl font-script">{INVITACION_DATA.nombreFamilia}</h2>
+                                <h2 className="text-brand-base text-2xl font-script">{nombreFamilia}</h2>
                             </div>
                             <div className="text-center pt-3 border-t border-brand-border">
                                 <p className="text-gray-600 font-sans-body text-sm">
-                                    {INVITACION_DATA.numeroMesa} - {INVITACION_DATA.numeroInvitados} {INVITACION_DATA.numeroInvitados === 1 ? "invitado" : "invitados"}
+                                    {numeroMesa ? `${numeroMesa} - ` : ''} {numeroInvitados} {numeroInvitados === 1 ? "invitado" : "invitados"}
                                 </p>
                             </div>
                         </div>
@@ -167,13 +194,13 @@ export default function ConfirmarAsistencia() {
                                     </motion.div>
                                     <div className="flex-1">
                                         <div className="text-brand-base font-sans-body font-medium">Confirmo mi asistencia</div>
-                                        <p className="text-sm text-gray-600 font-sans-body">Asistiremos todos los invitados ({INVITACION_DATA.numeroInvitados})</p>
+                                        <p className="text-sm text-gray-600 font-sans-body">Asistiremos todos los invitados ({numeroInvitados})</p>
                                     </div>
                                 </label>
 
                                 {/* Opción 2: Menos personas */}
                                 <label htmlFor="menos-personas" className={`flex items-start space-x-3 p-4 rounded-xl border hover:border-brand-base transition-colors cursor-pointer ${asistencia === 'menos-personas' ? 'border-brand-base bg-brand-light/50' : 'border-brand-border'}`}>
-                                    <input type="radio" id="menos-personas" name="asistenciaGroup" value="menos-personas" checked={asistencia === 'menos-personas'} onChange={() => setAsistencia('menos-personas')} className="sr-only" />
+                                    <input type="radio" id="menos-personas" name="asistenciaGroup" value="menos-personas" checked={asistencia === 'menos-personas'} onChange={() => { setAsistencia('menos-personas'); setNumeroPersonas(numeroInvitados > 1 ? numeroInvitados - 1 : 1); }} className="sr-only" />
                                     <motion.div className="w-6 h-6 flex-shrink-0 relative" initial={false} animate={{ scale: asistencia === 'menos-personas' ? [1, 1.2, 1] : 1 }} transition={{ duration: 0.2 }}>
                                         <Heart className="absolute inset-0 w-full h-full transition-colors" strokeWidth={1.5} fill={asistencia === 'menos-personas' ? fuchsiaColor : 'none'} color={fuchsiaColor} />
                                     </motion.div>
@@ -197,7 +224,7 @@ export default function ConfirmarAsistencia() {
                             </div>
                         </div>
 
-                        {/* Contador de Personas (Corregido el display conditional) */}
+                        {/* Contador de Personas */}
                         {asistencia === "menos-personas" && (
                             <motion.div
                                 className="space-y-3"
@@ -207,7 +234,7 @@ export default function ConfirmarAsistencia() {
                             >
                                 <label className="text-brand-dark font-sans-body">¿Cuántas personas asistirán?</label>
                                 <div className="flex items-center justify-center gap-6 bg-brand-light/50 rounded-2xl p-6 border border-brand-border">
-                                    {/* Botón Decrementar (rounded-xl) */}
+                                    {/* Botón Decrementar */}
                                     <button type="button" onClick={handleDecrement} disabled={numeroPersonas <= 1} className="w-14 h-14 rounded-xl bg-white border border-brand-border hover:bg-brand-light disabled:opacity-30 disabled:cursor-not-allowed shadow-md transition-colors">
                                         <Minus className="w-6 h-6 text-brand-base mx-auto" />
                                     </button>
@@ -215,27 +242,26 @@ export default function ConfirmarAsistencia() {
                                         <div className="text-5xl text-brand-dark font-script">{numeroPersonas}</div>
                                         <p className="text-sm text-gray-600 mt-1 font-sans-body">{numeroPersonas === 1 ? "persona" : "personas"}</p>
                                     </div>
-                                    {/* Botón Incrementar (rounded-xl) */}
-                                    <button type="button" onClick={handleIncrement} disabled={numeroPersonas >= INVITACION_DATA.numeroInvitados} className="w-14 h-14 rounded-xl bg-white border border-brand-border hover:bg-brand-light disabled:opacity-30 disabled:cursor-not-allowed shadow-md transition-colors">
+                                    {/* Botón Incrementar */}
+                                    <button type="button" onClick={handleIncrement} disabled={numeroPersonas >= numeroInvitados} className="w-14 h-14 rounded-xl bg-white border border-brand-border hover:bg-brand-light disabled:opacity-30 disabled:cursor-not-allowed shadow-md transition-colors">
                                         <Plus className="w-6 h-6 text-brand-base mx-auto" />
                                     </button>
                                 </div>
-                                <p className="text-xs text-center text-gray-600 font-sans-body">Máximo: {INVITACION_DATA.numeroInvitados} personas</p>
+                                <p className="text-xs text-center text-gray-600 font-sans-body">Máximo: {numeroInvitados} personas</p>
                             </motion.div>
                         )}
 
-                        {/* Botón de Enviar (Armonizado) */}
+                        {/* Botón de Enviar */}
                         <button
                             type="submit"
                             className="relative overflow-hidden w-full bg-brand-base hover:bg-brand-dark text-white py-4 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl text-base h-auto font-sans-body flex items-center justify-center disabled:opacity-50"
                             disabled={isSubmitting}
                         >
-                            {/* 💡 CAMBIO: Icono Check para confirmar */}
                             <Check className="w-5 h-5 mr-2" />
                             Confirmar
                         </button>
 
-                        {/* Pie de sección (Armonizado) */}
+                        {/* Pie de sección */}
                         <p className="font-sans-body text-brand-base/90 pt-4 text-center text-sm">
                             Tu presencia es muy importante para nosotros
                         </p>
