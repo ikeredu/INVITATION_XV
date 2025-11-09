@@ -1,0 +1,151 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabaseAnonClient, supabaseServiceClient } from '../../utils/supabaseServer';
+
+// Server-side logic for authentication and data fetching
+const { data: { session } } = await supabaseAnonClient.auth.getSession();
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+
+// Fetch all guests if authenticated, and join with the mesas table
+const { data: invitados, error } = await supabaseServiceClient
+  .from('invitados')
+  .select('*, mesas(nombre_mesa)');
+
+if (error) {
+  console.error('Error fetching invitados:', error.message);
+  // Handle error appropriately, maybe redirect to an error page or show a message
+}
+---
+
+<Layout title="Panel de Administración">
+  <main class="min-h-screen bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Panel de Administración</h1>
+        <form method="POST" action="/api/auth/logout">
+          <button
+            type="submit"
+            class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Cerrar Sesión
+          </button>
+        </form>
+      </div>
+
+      {invitados && invitados.length > 0 ? (
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Invitado Principal
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Estado Confirmación
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Pases Permitidos
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Asistentes Confirmados
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Mesa Asignada
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Token
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="guest-table-body">
+              {invitados.map((invitado) => (
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {invitado.nombre_invitado_principal}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {invitado.confirmado ? '✅ Confirmado' : '❌ Pendiente'}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    {invitado.num_acompanantes_permitidos}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                    {invitado.num_asistentes_confirmados}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {invitado.mesas ? invitado.mesas.nombre_mesa : 'N/A'}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                    {invitado.token_secreto}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button
+                      class="copy-link-btn text-indigo-600 hover:text-indigo-900"
+                      data-guest-name={invitado.nombre_invitado_principal}
+                      data-token={invitado.token_secreto}
+                    >
+                      Copiar Enlace
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p class="text-center text-gray-600">No hay invitados registrados.</p>
+      )}
+    </div>
+  </main>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.getElementById('guest-table-body');
+
+    if (tableBody) {
+      tableBody.addEventListener('click', async (event) => {
+        const target = event.target as HTMLElement;
+        if (target.classList.contains('copy-link-btn')) {
+          const button = target as HTMLButtonElement;
+          const guestName = button.dataset.guestName;
+          const token = button.dataset.token;
+
+          if (!guestName || !token) return;
+
+          const baseUrl = window.location.origin;
+          const invitationLink = `${baseUrl}/confirmacion/${token}`;
+          
+          const message = `¡Hola ${guestName}! Te estamos esperando para celebrar. Confirma tu asistencia aquí: ${invitationLink}`;
+
+          try {
+            await navigator.clipboard.writeText(message);
+            const originalText = button.textContent;
+            button.textContent = '¡Copiado!';
+            button.disabled = true;
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.disabled = false;
+            }, 2000);
+          } catch (err) {
+            console.error('Error al copiar el enlace:', err);
+            alert('No se pudo copiar el enlace.');
+          }
+        }
+      });
+    }
+  });
+</script>
+
+      ) : (
+        <p class="text-center text-gray-600">No hay invitados registrados.</p>
+      )}
+    </div>
+  </main>
+</Layout>
