@@ -5,11 +5,7 @@
         "nombre_mesa_asignada": "Mesa 19",
         "sobrenombre":"Lupita Zunú"
     },
-    {
-        "nombre_invitado_principal": "Delina Torija",
-        "num_acompanantes_permitidos": 3,
-        "nombre_mesa_asignada": "Mesa 6"
-    },
+   
     {
         "nombre_invitado_principal": "Victor chambelan",
         "num_acompanantes_permitidos": 3,
@@ -30,21 +26,13 @@
         "num_acompanantes_permitidos": 3,
         "nombre_mesa_asignada": "Mesa 26"
     },
-    {
-        "nombre_invitado_principal": "antonio martinez",
-        "num_acompanantes_permitidos": 3,
-        "nombre_mesa_asignada": "Mesa 27"
-    },
+
     {
         "nombre_invitado_principal": "cruz Lenin",
         "num_acompanantes_permitidos": 4,
         "nombre_mesa_asignada": "Mesa 2"
     },
-    {
-        "nombre_invitado_principal": "Frank usganda",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 8"
-    },
+   
    
     {
         "nombre_invitado_principal": "Velueta Figueroa",
@@ -72,16 +60,7 @@
         "num_acompanantes_permitidos": 4,
         "nombre_mesa_asignada": "Mesa 23"
     },
-    {
-        "nombre_invitado_principal": "Dodiber cordero",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 24"
-    },
-    {
-        "nombre_invitado_principal": "Santiago cordero",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 24"
-    },
+    
     {
         "nombre_invitado_principal": "Frank bautista",
         "num_acompanantes_permitidos": 5,
@@ -97,11 +76,7 @@
         "num_acompanantes_permitidos": 5,
         "nombre_mesa_asignada": "Mesa 12"
     },
-    {
-        "nombre_invitado_principal": "Torres perez",
-        "num_acompanantes_permitidos": 5,
-        "nombre_mesa_asignada": "Mesa 15"
-    },
+    
     {
         "nombre_invitado_principal": "Pacho",
         "num_acompanantes_permitidos": 5,
