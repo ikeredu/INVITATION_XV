@@ -23,6 +23,20 @@ if (error) {
   console.error("Error fetching invitados:", error.message);
   // Handle error appropriately, maybe redirect to an error page or show a message
 }
+
+const { data: mesas, error: mesasError } = await supabaseServiceClient
+  .from('mesas')
+  .select(`
+    *,
+    invitados (
+      *
+    )
+  `);
+
+if (mesasError) {
+  console.error("Error fetching mesas:", mesasError.message);
+  // Handle error appropriately, maybe redirect to an error page or show a message
+}
 ---
 
 <Layout title="Panel de Administración">
@@ -40,107 +54,116 @@ if (error) {
         </form>
       </div>
 
-      {
-        invitados && invitados.length > 0 ? (
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Invitado Principal
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Sobrenombre
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Estado Confirmación
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Pases Permitidos
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Asistentes Confirmados
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Mesa Asignada
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Token
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody
-                class="bg-white divide-y divide-gray-200"
-                id="guest-table-body"
-              >
-                {invitados.map((invitado) => (
-                  <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {invitado.nombre_invitado_principal}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {invitado.sobrenombre || ""}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {invitado.confirmado ? "✅ Confirmado" : "❌ Pendiente"}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {invitado.num_acompanantes_permitidos}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {invitado.num_asistentes_confirmados}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {invitado.mesas ? invitado.mesas.nombre_mesa : "N/A"}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                      {invitado.token_secreto}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        class="copy-link-btn text-indigo-600 hover:text-indigo-900"
-                        data-guest-name={invitado.nombre_invitado_principal}
-                        data-token={invitado.token_secreto}
-                      >
-                        Copiar Enlace
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div class="space-y-4">
+        <div class="border border-gray-200 rounded-lg">
+          <button class="w-full text-left p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none" data-accordion-trigger="invitados">
+            <h2 class="text-xl font-bold">Invitados</h2>
+          </button>
+          <div id="accordion-invitados" class="hidden p-4">
+            {
+              invitados && invitados.length > 0 ? (
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invitado Principal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sobrenombre</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado Confirmación</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pases Permitidos</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asistentes Confirmados</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mesa Asignada</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Token</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="guest-table-body">
+                      {invitados.map((invitado) => (
+                        <tr>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{invitado.nombre_invitado_principal}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invitado.sobrenombre || ""}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invitado.confirmado ? "✅ Confirmado" : "❌ Pendiente"}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{invitado.num_acompanantes_permitidos}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{invitado.num_asistentes_confirmados}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invitado.mesas ? invitado.mesas.nombre_mesa : "N/A"}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{invitado.token_secreto}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="copy-link-btn text-indigo-600 hover:text-indigo-900" data-guest-name={invitado.nombre_invitado_principal} data-token={invitado.token_secreto}>
+                              Copiar Enlace
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p class="text-center text-gray-600">No hay invitados registrados.</p>
+              )
+            }
           </div>
-        ) : (
-          <p class="text-center text-gray-600">No hay invitados registrados.</p>
-        )
-      }
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="w-full text-left p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none" data-accordion-trigger="mesas">
+            <h2 class="text-xl font-bold">Mesas</h2>
+          </button>
+          <div id="accordion-mesas" class="hidden p-4">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mesa</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacidad</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ocupados</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="mesas-container">
+                  {mesas && mesas.map(mesa => {
+                    const ocupados = mesa.invitados.reduce((acc, inv) => acc + inv.num_asistentes_confirmados, 0);
+                    let estado = '';
+                    let color = '';
+
+                    if (ocupados < mesa.capacidad) {
+                      estado = 'Incompleta';
+                      color = 'text-yellow-600';
+                    } else if (ocupados === mesa.capacidad) {
+                      estado = 'Completa';
+                      color = 'text-green-600';
+                    } else {
+                      estado = 'Error de asignaciones';
+                      color = 'text-red-600';
+                    }
+
+                    return (
+                      <>
+                        <tr class="cursor-pointer" data-mesa-id={mesa.id}>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{mesa.nombre_mesa}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{mesa.capacidad}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ocupados}</td>
+                          <td class={`px-6 py-4 whitespace-nowrap text-sm ${color} font-medium`}>{estado}</td>
+                        </tr>
+                        <tr id={`invitados-mesa-${mesa.id}`} class="hidden">
+                          <td colspan="4" class="px-6 py-4">
+                            {mesa.invitados.length > 0 ? (
+                              <ul class="list-disc ml-5">
+                                {mesa.invitados.map(invitado => (
+                                  <li>{invitado.nombre_invitado_principal} ({invitado.num_asistentes_confirmados} asistentes)</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p class="text-gray-500">No hay invitados asignados a esta mesa.</p>
+                            )}
+                          </td>
+                        </tr>
+                      </>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 </Layout>
@@ -182,6 +205,31 @@ Con afecto: Familia Méndez Cruz.`;
           } catch (err) {
             console.error("Error al copiar el enlace:", err);
             alert("No se pudo copiar el enlace.");
+          }
+        }
+      });
+    }
+
+    document.querySelectorAll("[data-accordion-trigger]").forEach(trigger => {
+      trigger.addEventListener("click", () => {
+        const contentId = `accordion-${trigger.getAttribute("data-accordion-trigger")}`;
+        const content = document.getElementById(contentId);
+        if (content) {
+          content.classList.toggle("hidden");
+        }
+      });
+    });
+
+    const mesasContainer = document.getElementById("mesas-container");
+    if (mesasContainer) {
+      mesasContainer.addEventListener("click", (event) => {
+        const target = event.target as HTMLElement;
+        const mesaHeader = target.closest("[data-mesa-id]");
+        if (mesaHeader) {
+          const mesaId = mesaHeader.getAttribute("data-mesa-id");
+          const invitadosList = document.getElementById(`invitados-mesa-${mesaId}`);
+          if (invitadosList) {
+            invitadosList.classList.toggle("hidden");
           }
         }
       });
