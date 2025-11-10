@@ -5,6 +5,21 @@ import {
   supabaseServiceClient,
 } from "../../utils/supabaseServer";
 
+interface InvitadoMesa {
+  id: string;
+  nombre_invitado_principal: string;
+  num_asistentes_confirmados: number;
+  // Add other properties of an invitado if needed
+}
+
+interface MesaConInvitados {
+  id: string;
+  nombre_mesa: string;
+  capacidad: number;
+  invitados: InvitadoMesa[];
+  // Add other properties of a mesa if needed
+}
+
 // Server-side logic for authentication and data fetching
 const {
   data: { session },
@@ -15,15 +30,42 @@ if (!session) {
 }
 
 // Fetch all guests if authenticated, and join with the mesas table
-const { data: invitados, error } = await supabaseServiceClient
+const { data: invitados, error: invitadosError } = await supabaseServiceClient
   .from("invitados")
   .select("*, sobrenombre, mesas(nombre_mesa)")
   .order('nombre_invitado_principal', { ascending: true });
 
-if (error) {
-  console.error("Error fetching invitados:", error.message);
-  // Handle error appropriately, maybe redirect to an error page or show a message
+if (invitadosError) {
+  console.error("Error fetching invitados:", invitadosError.message);
+  // Handle error appropriately
 }
+
+// Fetch all mesas with their guests
+const { data: mesasRaw, error: mesasError } = await supabaseServiceClient
+  .from("mesas")
+  .select("*, invitados(*)");
+
+if (mesasError) {
+  console.error("Error fetching mesas:", mesasError.message);
+  // Handle error appropriately
+}
+
+const mesas: MesaConInvitados[] = (mesasRaw as MesaConInvitados[]) || [];
+
+const mesasConteo = mesas
+  ? mesas.map((mesa) => {
+      const confirmados = mesa.invitados.reduce(
+        (acc: number, invitado: InvitadoMesa) => acc + (invitado.num_asistentes_confirmados || 0),
+        0
+      );
+      return {
+        ...mesa,
+        confirmados,
+        disponibles: mesa.capacidad - confirmados,
+        isFull: confirmados >= mesa.capacidad,
+      };
+    })
+  : [];
 ---
 
 <Layout title="Panel de Administración">
@@ -41,122 +83,254 @@ if (error) {
         </form>
       </div>
 
-      <div class="mb-4">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Buscar por nombre del invitado principal..."
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg"
-        />
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+          <button
+            id="tab-invitados"
+            class="whitespace-nowrap py-4 px-1 border-b-2 border-indigo-500 font-medium text-sm text-indigo-600"
+          >
+            Invitados
+          </button>
+          <button
+            id="tab-mesas"
+            class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          >
+            Mesas
+          </button>
+        </nav>
       </div>
 
-      {
-        invitados && invitados.length > 0 ? (
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Invitado Principal
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Sobrenombre
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Estado Confirmación
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Pases Permitidos
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Asistentes Confirmados
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Mesa Asignada
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Token
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody
-                class="bg-white divide-y divide-gray-200"
-                id="guest-table-body"
-              >
-                {invitados.map((invitado) => (
+      <div id="panel-invitados" class="py-6">
+        <div class="mb-4">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Buscar por nombre del invitado principal..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+
+        {
+          invitados && invitados.length > 0 ? (
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
                   <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {invitado.nombre_invitado_principal}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {invitado.sobrenombre || ""}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {invitado.confirmado ? "✅ Confirmado" : "❌ Pendiente"}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {invitado.num_acompanantes_permitidos}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {invitado.num_asistentes_confirmados}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {invitado.mesas ? invitado.mesas.nombre_mesa : "N/A"}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                      {invitado.token_secreto}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        class="copy-link-btn text-indigo-600 hover:text-indigo-900"
-                        data-guest-name={invitado.nombre_invitado_principal}
-                        data-token={invitado.token_secreto}
-                      >
-                        Copiar Enlace
-                      </button>
-                    </td>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Invitado Principal
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Sobrenombre
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Estado Confirmación
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Pases Permitidos
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Asistentes Confirmados
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Mesa Asignada
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Token
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Acciones
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p class="text-center text-gray-600">No hay invitados registrados.</p>
-        )
-      }
+                </thead>
+                <tbody
+                  class="bg-white divide-y divide-gray-200"
+                  id="guest-table-body"
+                >
+                  {invitados.map((invitado) => (
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {invitado.nombre_invitado_principal}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {invitado.sobrenombre || ""}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {invitado.confirmado ? "✅ Confirmado" : "❌ Pendiente"}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                        {invitado.num_acompanantes_permitidos}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                        {invitado.num_asistentes_confirmados}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {invitado.mesas ? invitado.mesas.nombre_mesa : "N/A"}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                        {invitado.token_secreto}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          class="copy-link-btn text-indigo-600 hover:text-indigo-900"
+                          data-guest-name={invitado.nombre_invitado_principal}
+                          data-token={invitado.token_secreto}
+                        >
+                          Copiar Enlace
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p class="text-center text-gray-600">
+              No hay invitados registrados.
+            </p>
+          )
+        }
+      </div>
+
+      <div id="panel-mesas" class="hidden py-6">
+        <div class="mb-4 flex flex-wrap justify-center gap-2 sm:space-x-4">
+          <button
+            data-filter="all"
+            class="mesa-filter-btn bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm"
+          >
+            Todas
+          </button>
+          <button
+            data-filter="full"
+            class="mesa-filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm"
+          >
+            Completadas
+          </button>
+          <button
+            data-filter="available"
+            class="mesa-filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm"
+          >
+            Incompletas
+          </button>
+        </div>
+
+        <div id="mesas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {
+            mesasConteo.map((mesa) => (
+              <div
+                class="mesa-card bg-white p-6 rounded-lg shadow-md border"
+                data-status={mesa.isFull ? "full" : "available"}
+              >
+                <h3 class="text-xl font-bold mb-2">{mesa.nombre_mesa}</h3>
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2 sm:gap-0">
+                  <div class="text-center sm:text-left">
+                    <p class="text-sm text-gray-600">Capacidad</p>
+                    <p class="text-lg font-semibold">{mesa.capacidad}</p>
+                  </div>
+                  <div class="text-center sm:text-left">
+                    <p class="text-sm text-gray-600">Confirmados</p>
+                    <p class="text-lg font-semibold">{mesa.confirmados}</p>
+                  </div>
+                  <div class="text-center sm:text-left">
+                    <p class="text-sm text-gray-600">Disponibles</p>
+                    <p class="text-lg font-semibold">{mesa.disponibles}</p>
+                  </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                  <h4 class="font-semibold mb-2">Invitados en esta mesa:</h4>
+                  <ul class="list-disc list-inside text-sm pl-2">
+                    {mesa.invitados.length > 0 ? (
+                      mesa.invitados.map((invitado) => (
+                        <li>
+                          {invitado.nombre_invitado_principal} (
+                          {invitado.num_asistentes_confirmados})
+                        </li>
+                      ))
+                    ) : (
+                      <li>No hay invitados asignados a esta mesa.</li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
   </main>
 </Layout>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    const tabInvitados = document.getElementById("tab-invitados");
+    const tabMesas = document.getElementById("tab-mesas");
+    const panelInvitados = document.getElementById("panel-invitados");
+    const panelMesas = document.getElementById("panel-mesas");
+
+    if (tabInvitados && tabMesas && panelInvitados && panelMesas) {
+      tabInvitados.addEventListener("click", () => {
+        panelInvitados.classList.remove("hidden");
+        panelMesas.classList.add("hidden");
+        tabInvitados.classList.add("border-indigo-500", "text-indigo-600");
+        tabInvitados.classList.remove(
+          "border-transparent",
+          "text-gray-500",
+          "hover:text-gray-700",
+          "hover:border-gray-300"
+        );
+        tabMesas.classList.add(
+          "border-transparent",
+          "text-gray-500",
+          "hover:text-gray-700",
+          "hover:border-gray-300"
+        );
+        tabMesas.classList.remove("border-indigo-500", "text-indigo-600");
+      });
+
+      tabMesas.addEventListener("click", () => {
+        panelMesas.classList.remove("hidden");
+        panelInvitados.classList.add("hidden");
+        tabMesas.classList.add("border-indigo-500", "text-indigo-600");
+        tabMesas.classList.remove(
+          "border-transparent",
+          "text-gray-500",
+          "hover:text-gray-700",
+          "hover:border-gray-300"
+        );
+        tabInvitados.classList.add(
+          "border-transparent",
+          "text-gray-500",
+          "hover:text-gray-700",
+          "hover:border-gray-300"
+        );
+        tabInvitados.classList.remove("border-indigo-500", "text-indigo-600");
+      });
+    }
+
     const searchInput = document.getElementById("searchInput");
     const tableBody = document.getElementById("guest-table-body");
     const rows = tableBody ? tableBody.getElementsByTagName("tr") : [];
@@ -171,7 +345,8 @@ if (error) {
           const row = rows[i];
           const guestNameCell = row.getElementsByTagName("td")[0];
           if (guestNameCell) {
-            const guestName = guestNameCell.textContent || guestNameCell.innerText;
+            const guestName =
+              guestNameCell.textContent || guestNameCell.innerText;
             if (guestName.toLowerCase().includes(searchTerm)) {
               row.style.display = "";
             } else {
@@ -219,6 +394,33 @@ Con afecto: Familia Méndez Cruz.`;
         }
       });
     }
+
+    const filterButtons = document.querySelectorAll(".mesa-filter-btn");
+    const mesaCards = document.querySelectorAll(".mesa-card");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.getAttribute("data-filter");
+
+        // Update button styles
+        filterButtons.forEach((btn) => {
+          btn.classList.remove("bg-indigo-500", "text-white");
+          btn.classList.add("bg-gray-200", "text-gray-700");
+        });
+        button.classList.add("bg-indigo-500", "text-white");
+        button.classList.remove("bg-gray-200", "text-gray-700");
+
+        // Filter cards
+        mesaCards.forEach((card) => {
+          const status = card.getAttribute("data-status");
+          if (filter === "all" || filter === status) {
+            (card as HTMLElement).style.display = "";
+          } else {
+            (card as HTMLElement).style.display = "none";
+          }
+        });
+      });
+    });
   });
 </script>
 
