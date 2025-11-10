@@ -31,16 +31,16 @@ export const TarjetaConfirmacion = React.forwardRef<HTMLDivElement, TarjetaConfi
                 <div className="mb-6">
                     <h3 className="text-xl text-gray-700 mb-3 text-center" style={{ fontFamily: "'Dancing Script', cursive" }}>Tu Confirmación</h3>
                     <div className="bg-brand-light/50 rounded-xl p-4 space-y-3 text-lg" style={{ fontFamily: "'Lato', sans-serif" }}>
-                        <div className="flex items-baseline">
+                        <div className="flex items-center">
                             <Users className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: fuchsiaColor }} />
                             <span><strong className="font-semibold">{nombreFamilia}</strong></span>
                         </div>
-                        <div className="flex items-baseline">
+                        <div className="flex items-center">
                             <Ticket className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: fuchsiaColor }} />
                             <span>{asistentesConfirmados} {asistentesConfirmados === 1 ? 'asistente confirmado' : 'asistentes confirmados'}</span>
                         </div>
                         {numeroMesa && (
-                            <div className="flex items-baseline">
+                            <div className="flex items-center">
                                 <MapPin className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: fuchsiaColor }} />
                                 <span>Mesa: <strong className="font-semibold">{numeroMesa}</strong></span>
                             </div>
@@ -52,15 +52,15 @@ export const TarjetaConfirmacion = React.forwardRef<HTMLDivElement, TarjetaConfi
                 <div className="mb-6">
                     <h3 className="text-xl text-gray-700 mb-3 text-center" style={{ fontFamily: "'Dancing Script', cursive" }}>Detalles del Evento</h3>
                     <div className="bg-gray-50 rounded-xl p-4 space-y-3 text-lg" style={{ fontFamily: "'Lato', sans-serif" }}>
-                        <div className="flex items-baseline">
+                        <div className="flex items-center">
                             <Calendar className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: fuchsiaColor }} />
                             <span>13 de Diciembre del 2025</span>
                         </div>
-                        <div className="flex items-baseline">
+                        <div className="flex items-center">
                             <Clock className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: fuchsiaColor }} />
                             <span>Ceremonia Religiosa: 6:00 PM</span>
                         </div>
-                        <div className="flex items-baseline">
+                        <div className="flex items-center">
                             <Clock className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: fuchsiaColor }} />
                             <span>Recepción: 7:00 PM</span>
                         </div>
@@ -70,7 +70,7 @@ export const TarjetaConfirmacion = React.forwardRef<HTMLDivElement, TarjetaConfi
                 {/* Pie de la tarjeta */}
                 <div className="text-center border-t-2 border-gray-100 pt-4 mt-4">
                     <Sparkles className="w-6 h-6 mx-auto mb-2" style={{ color: fuchsiaColor }} />
-                    <p className="text-lg text-gray-600" style={{ fontFamily: "'Dancing Script', cursive" }}>"Tu presencia será mi mejor regalo"</p>
+                    <p className="text-lg text-gray-600" style={{ fontFamily: "'Dancing Script', cursive" }}>"Nos vemos pronto"</p>
                 </div>
             </div>
         );
