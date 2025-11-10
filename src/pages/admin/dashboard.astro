@@ -1,21 +1,26 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { supabaseAnonClient, supabaseServiceClient } from '../../utils/supabaseServer';
+import Layout from "../../layouts/Layout.astro";
+import {
+  supabaseAnonClient,
+  supabaseServiceClient,
+} from "../../utils/supabaseServer";
 
 // Server-side logic for authentication and data fetching
-const { data: { session } } = await supabaseAnonClient.auth.getSession();
+const {
+  data: { session },
+} = await supabaseAnonClient.auth.getSession();
 
 if (!session) {
-  return Astro.redirect('/admin/login');
+  return Astro.redirect("/admin/login");
 }
 
 // Fetch all guests if authenticated, and join with the mesas table
 const { data: invitados, error } = await supabaseServiceClient
-  .from('invitados')
-  .select('*, mesas(nombre_mesa)');
+  .from("invitados")
+  .select("*, mesas(nombre_mesa)");
 
 if (error) {
-  console.error('Error fetching invitados:', error.message);
+  console.error("Error fetching invitados:", error.message);
   // Handle error appropriately, maybe redirect to an error page or show a message
 }
 ---
@@ -35,84 +40,110 @@ if (error) {
         </form>
       </div>
 
-      {invitados && invitados.length > 0 ? (
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Invitado Principal
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Estado Confirmación
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Pases Permitidos
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Asistentes Confirmados
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mesa Asignada
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Token
-                </th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200" id="guest-table-body">
-              {invitados.map((invitado) => (
+      {
+        invitados && invitados.length > 0 ? (
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
                 <tr>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {invitado.nombre_invitado_principal}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {invitado.confirmado ? '✅ Confirmado' : '❌ Pendiente'}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                    {invitado.num_acompanantes_permitidos}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                    {invitado.num_asistentes_confirmados}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {invitado.mesas ? invitado.mesas.nombre_mesa : 'N/A'}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                    {invitado.token_secreto}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      class="copy-link-btn text-indigo-600 hover:text-indigo-900"
-                      data-guest-name={invitado.nombre_invitado_principal}
-                      data-token={invitado.token_secreto}
-                    >
-                      Copiar Enlace
-                    </button>
-                  </td>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Invitado Principal
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Estado Confirmación
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Pases Permitidos
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Asistentes Confirmados
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Mesa Asignada
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Token
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Acciones
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p class="text-center text-gray-600">No hay invitados registrados.</p>
-      )}
+              </thead>
+              <tbody
+                class="bg-white divide-y divide-gray-200"
+                id="guest-table-body"
+              >
+                {invitados.map((invitado) => (
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {invitado.nombre_invitado_principal}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {invitado.confirmado ? "✅ Confirmado" : "❌ Pendiente"}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                      {invitado.num_acompanantes_permitidos}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                      {invitado.num_asistentes_confirmados}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {invitado.mesas ? invitado.mesas.nombre_mesa : "N/A"}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                      {invitado.token_secreto}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        class="copy-link-btn text-indigo-600 hover:text-indigo-900"
+                        data-guest-name={invitado.nombre_invitado_principal}
+                        data-token={invitado.token_secreto}
+                      >
+                        Copiar Enlace
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p class="text-center text-gray-600">No hay invitados registrados.</p>
+        )
+      }
     </div>
   </main>
 </Layout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.getElementById('guest-table-body');
+  document.addEventListener("DOMContentLoaded", () => {
+    const tableBody = document.getElementById("guest-table-body");
 
     if (tableBody) {
-      tableBody.addEventListener('click', async (event) => {
+      tableBody.addEventListener("click", async (event) => {
         const target = event.target as HTMLElement;
-        if (target.classList.contains('copy-link-btn')) {
+        if (target.classList.contains("copy-link-btn")) {
           const button = target as HTMLButtonElement;
           const guestName = button.dataset.guestName;
           const token = button.dataset.token;
@@ -121,21 +152,27 @@ if (error) {
 
           const baseUrl = window.location.origin;
           const invitationLink = `${baseUrl}/confirmacion/${token}`;
-          
-          const message = `¡Hola ${guestName}! Te estamos esperando para celebrar. Confirma tu asistencia aquí: ${invitationLink}`;
+
+          const message = `Con el corazón lleno de gratitud a Dios, la familia de Yeri Paola desea compartir contigo la alegría de celebrar sus XV años. ✨ Será un honor contar con tu compañía en este día tan importante. Consulta la invitación interactiva en el siguiente enlace:
+👉 ${invitationLink}
+
+Por favor confirma tu asistencia antes del 16 de noviembre.
+
+Con afecto,
+Familia Méndez Cruz.`;
 
           try {
             await navigator.clipboard.writeText(message);
             const originalText = button.textContent;
-            button.textContent = '¡Copiado!';
+            button.textContent = "¡Copiado!";
             button.disabled = true;
             setTimeout(() => {
               button.textContent = originalText;
               button.disabled = false;
             }, 2000);
           } catch (err) {
-            console.error('Error al copiar el enlace:', err);
-            alert('No se pudo copiar el enlace.');
+            console.error("Error al copiar el enlace:", err);
+            alert("No se pudo copiar el enlace.");
           }
         }
       });
@@ -143,9 +180,7 @@ if (error) {
   });
 </script>
 
-      ) : (
-        <p class="text-center text-gray-600">No hay invitados registrados.</p>
-      )}
-    </div>
-  </main>
-</Layout>
+) : (
+<p class="text-center text-gray-600">No hay invitados registrados.</p>
+)}
+
