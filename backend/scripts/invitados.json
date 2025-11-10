@@ -1,52 +1,7 @@
 [
     {
-        "nombre_invitado_principal": "Carlos Cruz Hernández",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 2"
-    },
-    {
-        "nombre_invitado_principal": "Martín Méndez Cruz",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 3"
-    },
-    {
-        "nombre_invitado_principal": "Abel Lozano",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 3"
-    },
-    {
-        "nombre_invitado_principal": "Eulalio García",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 3"
-    },
-    {
-        "nombre_invitado_principal": "Rafael Barahona",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 16"
-    },
-    {
-        "nombre_invitado_principal": "Adriana Martinez L.",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 18"
-    },
-    {
-        "nombre_invitado_principal": "Jocabeth Pérez P.",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 19"
-    },
-    {
-        "nombre_invitado_principal": "Víctor Martínez Álvarez",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 25"
-    },
-    {
-        "nombre_invitado_principal": "Rafael",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 25"
-    },
-    {
-        "nombre_invitado_principal": "Alejandra Becerra Camara",
-        "num_acompanantes_permitidos": 1,
-        "nombre_mesa_asignada": "Mesa 5"
+        "nombre_invitado_principal": "Familia Sosa Ortega",
+        "num_acompanantes_permitidos": 2,
+        "nombre_mesa_asignada": "Mesa 26"
     }
 ]
