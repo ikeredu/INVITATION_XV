@@ -2,18 +2,17 @@
 
 // 💡 Importamos los hooks de React y los iconos necesarios
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Play, Pause } from 'lucide-react'; 
+import { ChevronDown, Play, Pause } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 
 const song = {
-    src: '/music/cancion1.mp3', 
-    title: 'Say Yes To Heaven', 
-    artist: 'Lana Del Rey', 
-    coverArt: '/images/cover1.webp' 
+    src: '/music/cancion1.mp3',
+    title: 'Say Yes To Heaven',
+    artist: 'Lana Del Rey',
+    coverArt: '/images/cover1.webp'
 };
 
-// ... (formatTime function sin cambios) ...
 const formatTime = (seconds: number) => {
     if (isNaN(seconds)) return '00:00';
     const minutes = Math.floor(seconds / 60);
@@ -65,7 +64,7 @@ export default function HeroAnimado() {
             {/* --- WIDGET DE MÚSICA Y SU CONTENEDOR --- */}
             <motion.div
                 // 💡 Aseguramos que el contenedor del widget sea relativo para poder posicionar el Hint
-                className="absolute top-6 right-6 z-30" 
+                className="absolute top-6 right-6 z-30"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
@@ -99,7 +98,7 @@ export default function HeroAnimado() {
                         </button>
                     </div>
                 </div>
-                
+
                 {/* 💡 2. EL HINT (Se muestra solo si NO está sonando) */}
                 {!isPlaying && (
                     <motion.p

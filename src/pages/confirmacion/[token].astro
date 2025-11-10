@@ -23,25 +23,35 @@ console.log(`[DEBUG] Token recibido de la URL: ${token}`);
 if (token) {
     const { data, error } = await supabaseAnonClient
         .from("invitados")
-        .select('nombre_invitado_principal, num_acompanantes_permitidos, token_secreto, mesas(nombre_mesa), confirmado, num_asistentes_confirmados')
+        .select(
+            "nombre_invitado_principal, num_acompanantes_permitidos, token_secreto, mesas(nombre_mesa), confirmado, num_asistentes_confirmados",
+        )
         .eq("token_secreto", token)
         .single();
 
     if (error && error.code !== "PGRST116") {
-        console.error(`[ERROR] Ocurrió un error al consultar Supabase: ${error.message}`);
+        console.error(
+            `[ERROR] Ocurrió un error al consultar Supabase: ${error.message}`,
+        );
     }
 
     invitado = data;
 }
 
 // Si después de la búsqueda no se encontró un invitado, redirigimos a la página de error.
-console.log('[DEBUG] Valor de "invitado" antes de la comprobación de redirección:', invitado);
+console.log(
+    '[DEBUG] Valor de "invitado" antes de la comprobación de redirección:',
+    invitado,
+);
 if (!invitado) {
-    console.log('[DEBUG] ¡ATENCIÓN! Entrando al bloque IF para redirigir. El invitado es nulo.');
-    return Astro.redirect('/error/invalid-invitation');
+    console.log(
+        "[DEBUG] ¡ATENCIÓN! Entrando al bloque IF para redirigir. El invitado es nulo.",
+    );
+    return Astro.redirect("/error/invalid-invitation");
 }
-console.log('[DEBUG] El invitado fue encontrado. Se procede a renderizar la página.');
----
+console.log(
+    "[DEBUG] El invitado fue encontrado. Se procede a renderizar la página.",
+);
 ---
 
 {/* El título de la página puede ser dinámico si se encontró un invitado */}
