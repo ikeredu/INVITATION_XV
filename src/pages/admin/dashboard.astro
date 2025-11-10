@@ -17,7 +17,8 @@ if (!session) {
 // Fetch all guests if authenticated, and join with the mesas table
 const { data: invitados, error } = await supabaseServiceClient
   .from("invitados")
-  .select("*, sobrenombre, mesas(nombre_mesa)");
+  .select("*, sobrenombre, mesas(nombre_mesa)")
+  .order('nombre_invitado_principal', { ascending: true });
 
 if (error) {
   console.error("Error fetching invitados:", error.message);
