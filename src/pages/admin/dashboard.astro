@@ -23,6 +23,20 @@ if (error) {
   console.error("Error fetching invitados:", error.message);
   // Handle error appropriately, maybe redirect to an error page or show a message
 }
+
+const { data: mesas, error: mesasError } = await supabaseServiceClient
+  .from('mesas')
+  .select(`
+    *,
+    invitados (
+      *
+    )
+  `);
+
+if (mesasError) {
+  console.error("Error fetching mesas:", mesasError.message);
+  // Handle error appropriately, maybe redirect to an error page or show a message
+}
 ---
 
 <Layout title="Panel de Administración">
@@ -38,6 +52,15 @@ if (error) {
             Cerrar Sesión
           </button>
         </form>
+      </div>
+
+      <div class="mb-4">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar por nombre del invitado principal..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        />
       </div>
 
       {
@@ -141,13 +164,80 @@ if (error) {
           <p class="text-center text-gray-600">No hay invitados registrados.</p>
         )
       }
+
+      <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">Vista de Mesas</h2>
+        <div id="mesas-container" class="space-y-4">
+          {mesas && mesas.map(mesa => {
+            const ocupados = mesa.invitados.reduce((acc, inv) => acc + inv.num_asistentes_confirmados, 0);
+            let estado = '';
+            let color = '';
+
+            if (ocupados < mesa.capacidad) {
+              estado = 'Incompleta';
+              color = 'text-yellow-600';
+            } else if (ocupados === mesa.capacidad) {
+              estado = 'Completa';
+              color = 'text-green-600';
+            } else {
+              estado = 'Error de asignaciones';
+              color = 'text-red-600';
+            }
+
+            return (
+              <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
+                <div class="grid grid-cols-4 gap-4 items-center cursor-pointer" data-mesa-id={mesa.id}>
+                  <div class="font-semibold">{mesa.nombre_mesa}</div>
+                  <div>Capacidad: {mesa.capacidad}</div>
+                  <div>Ocupados: {ocupados}</div>
+                  <div class={`${color} font-medium`}>{estado}</div>
+                </div>
+                <div id={`invitados-mesa-${mesa.id}`} class="hidden mt-4 pl-4 border-l-2 border-gray-200">
+                  {mesa.invitados.length > 0 ? (
+                    <ul class="list-disc ml-5">
+                      {mesa.invitados.map(invitado => (
+                        <li>{invitado.nombre_invitado_principal} ({invitado.num_asistentes_confirmados} asistentes)</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p class="text-gray-500">No hay invitados asignados a esta mesa.</p>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </div>
   </main>
 </Layout>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("searchInput");
     const tableBody = document.getElementById("guest-table-body");
+    const rows = tableBody ? tableBody.getElementsByTagName("tr") : [];
+
+    if (searchInput) {
+      searchInput.addEventListener("keyup", () => {
+        const searchTerm = (searchInput as HTMLInputElement).value
+          .toLowerCase()
+          .trim();
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const guestNameCell = row.getElementsByTagName("td")[0];
+          if (guestNameCell) {
+            const guestName = guestNameCell.textContent || guestNameCell.innerText;
+            if (guestName.toLowerCase().includes(searchTerm)) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          }
+        }
+      });
+    }
 
     if (tableBody) {
       tableBody.addEventListener("click", async (event) => {
@@ -182,6 +272,21 @@ Con afecto: Familia Méndez Cruz.`;
           } catch (err) {
             console.error("Error al copiar el enlace:", err);
             alert("No se pudo copiar el enlace.");
+          }
+        }
+      });
+    }
+
+    const mesasContainer = document.getElementById("mesas-container");
+    if (mesasContainer) {
+      mesasContainer.addEventListener("click", (event) => {
+        const target = event.target as HTMLElement;
+        const mesaHeader = target.closest("[data-mesa-id]");
+        if (mesaHeader) {
+          const mesaId = mesaHeader.getAttribute("data-mesa-id");
+          const invitadosList = document.getElementById(`invitados-mesa-${mesaId}`);
+          if (invitadosList) {
+            invitadosList.classList.toggle("hidden");
           }
         }
       });
