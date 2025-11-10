@@ -17,7 +17,7 @@ if (!session) {
 // Fetch all guests if authenticated, and join with the mesas table
 const { data: invitados, error } = await supabaseServiceClient
   .from("invitados")
-  .select("*, mesas(nombre_mesa)");
+  .select("*, sobrenombre, mesas(nombre_mesa)");
 
 if (error) {
   console.error("Error fetching invitados:", error.message);
@@ -51,6 +51,12 @@ if (error) {
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Invitado Principal
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Sobrenombre
                   </th>
                   <th
                     scope="col"
@@ -98,6 +104,9 @@ if (error) {
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {invitado.nombre_invitado_principal}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {invitado.sobrenombre || ""}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {invitado.confirmado ? "✅ Confirmado" : "❌ Pendiente"}
@@ -181,6 +190,6 @@ Familia Méndez Cruz.`;
 </script>
 
 ) : (
-<p class="text-center text-gray-600">No hay invitados registrados.</p>
-)}
+<p class="text-center text-gray-600"></p>
+)
 

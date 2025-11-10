@@ -60,6 +60,7 @@ async function seedData() {
         return {
             nombre_invitado_principal: invitado.nombre_invitado_principal,
             num_acompanantes_permitidos: invitado.num_acompanantes_permitidos,
+            sobrenombre: invitado.sobrenombre,
             token_secreto: nanoid(10),
             confirmado: false,
             num_asistentes_confirmados: 0,
