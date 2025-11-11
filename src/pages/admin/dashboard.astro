@@ -340,7 +340,7 @@ const mesasConteo = mesas
     const rows = tableBody ? tableBody.getElementsByTagName("tr") : [];
 
     if (searchInput) {
-      const normalizeString = (str) => {
+      const normalizeString = (str: string) => {
         return str
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
