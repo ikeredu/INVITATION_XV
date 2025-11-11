@@ -33,7 +33,7 @@ if (!session) {
 const { data: invitados, error: invitadosError } = await supabaseServiceClient
   .from("invitados")
   .select("*, sobrenombre, mesas(nombre_mesa)")
-  .order('nombre_invitado_principal', { ascending: true });
+  .order("nombre_invitado_principal", { ascending: true });
 
 if (invitadosError) {
   console.error("Error fetching invitados:", invitadosError.message);
@@ -55,8 +55,9 @@ const mesas: MesaConInvitados[] = (mesasRaw as MesaConInvitados[]) || [];
 const mesasConteo = mesas
   ? mesas.map((mesa) => {
       const confirmados = mesa.invitados.reduce(
-        (acc: number, invitado: InvitadoMesa) => acc + (invitado.num_asistentes_confirmados || 0),
-        0
+        (acc: number, invitado: InvitadoMesa) =>
+          acc + (invitado.num_asistentes_confirmados || 0),
+        0,
       );
       return {
         ...mesa,
@@ -237,7 +238,10 @@ const mesasConteo = mesas
           </button>
         </div>
 
-        <div id="mesas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          id="mesas-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {
             mesasConteo.map((mesa) => (
               <div
@@ -300,13 +304,13 @@ const mesasConteo = mesas
           "border-transparent",
           "text-gray-500",
           "hover:text-gray-700",
-          "hover:border-gray-300"
+          "hover:border-gray-300",
         );
         tabMesas.classList.add(
           "border-transparent",
           "text-gray-500",
           "hover:text-gray-700",
-          "hover:border-gray-300"
+          "hover:border-gray-300",
         );
         tabMesas.classList.remove("border-indigo-500", "text-indigo-600");
       });
@@ -319,13 +323,13 @@ const mesasConteo = mesas
           "border-transparent",
           "text-gray-500",
           "hover:text-gray-700",
-          "hover:border-gray-300"
+          "hover:border-gray-300",
         );
         tabInvitados.classList.add(
           "border-transparent",
           "text-gray-500",
           "hover:text-gray-700",
-          "hover:border-gray-300"
+          "hover:border-gray-300",
         );
         tabInvitados.classList.remove("border-indigo-500", "text-indigo-600");
       });
@@ -336,10 +340,18 @@ const mesasConteo = mesas
     const rows = tableBody ? tableBody.getElementsByTagName("tr") : [];
 
     if (searchInput) {
-      searchInput.addEventListener("keyup", () => {
-        const searchTerm = (searchInput as HTMLInputElement).value
+      const normalizeString = (str) => {
+        return str
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
           .toLowerCase()
           .trim();
+      };
+
+      searchInput.addEventListener("keyup", () => {
+        const searchTerm = normalizeString(
+          (searchInput as HTMLInputElement).value,
+        );
 
         for (let i = 0; i < rows.length; i++) {
           const row = rows[i];
@@ -347,7 +359,7 @@ const mesasConteo = mesas
           if (guestNameCell) {
             const guestName =
               guestNameCell.textContent || guestNameCell.innerText;
-            if (guestName.toLowerCase().includes(searchTerm)) {
+            if (normalizeString(guestName).includes(searchTerm)) {
               row.style.display = "";
             } else {
               row.style.display = "none";

@@ -1,13 +1,8 @@
 [
     {
-        "nombre_invitado_principal": "Dodiber Cordero",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 24",
-        "sobrenombre":"Dody"
-    },
-    {
-        "nombre_invitado_principal": "Familia Cordero Gonzáles",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 24"
+        "nombre_invitado_principal": "Familia Méndez Oramas",
+        "num_acompanantes_permitidos": 2,
+        "nombre_mesa_asignada": "Mesa 28",
+        "sobrenombre": "Iker y dani, uwu,jeje"
     }
-] 
+]
