@@ -195,13 +195,22 @@ const mesasConteo = mesas
                         {invitado.token_secreto}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          class="copy-link-btn text-indigo-600 hover:text-indigo-900"
-                          data-guest-name={invitado.nombre_invitado_principal}
-                          data-token={invitado.token_secreto}
-                        >
-                          Copiar Enlace
-                        </button>
+                        <div class="flex items-center space-x-4">
+                          <button
+                            class="copy-link-btn text-indigo-600 hover:text-indigo-900"
+                            data-guest-name={invitado.nombre_invitado_principal}
+                            data-token={invitado.token_secreto}
+                          >
+                            Copiar Enlace
+                          </button>
+                          <button
+                            class="copy-reminder-btn text-green-600 hover:text-green-900"
+                            data-guest-name={invitado.nombre_invitado_principal}
+                            data-token={invitado.token_secreto}
+                          >
+                            Copiar Recordatorio
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -372,16 +381,15 @@ const mesasConteo = mesas
     if (tableBody) {
       tableBody.addEventListener("click", async (event) => {
         const target = event.target as HTMLElement;
+        if (!target.dataset.guestName || !target.dataset.token) return;
+
+        const button = target as HTMLButtonElement;
+        const guestName = button.dataset.guestName;
+        const token = button.dataset.token;
+        const baseUrl = window.location.origin;
+        const invitationLink = `${baseUrl}/confirmacion/${token}`;
+
         if (target.classList.contains("copy-link-btn")) {
-          const button = target as HTMLButtonElement;
-          const guestName = button.dataset.guestName;
-          const token = button.dataset.token;
-
-          if (!guestName || !token) return;
-
-          const baseUrl = window.location.origin;
-          const invitationLink = `${baseUrl}/confirmacion/${token}`;
-
           const message = `Con el corazón lleno de gratitud a Dios, la familia de Yeri Paola desea compartir contigo la alegría de celebrar sus XV años. ✨ Será un honor contar con tu compañía en este día tan importante. Consulta la invitación interactiva en el siguiente enlace:
 👉 ${invitationLink}
 
@@ -402,6 +410,30 @@ Con afecto: Familia Méndez Cruz.`;
           } catch (err) {
             console.error("Error al copiar el enlace:", err);
             alert("No se pudo copiar el enlace.");
+          }
+        } else if (target.classList.contains("copy-reminder-btn")) {
+          const videoLink = `${baseUrl}/videos/VID_RECORDATORIO.mp4`;
+          const message = `¡Hola, ${guestName}! ✨ 
+La fecha límite para confirmar la asistencia a los XV años de Yeri Paola se acerca, y tu presencia es muy importante para nosotros.
+
+Queremos asegurarnos de que el proceso sea sencillo. Si necesitas ayuda para confirmar en la invitación digital, aquí tienes un breve video explicativo:
+
+▶️: ${videoLink}
+
+Por favor, no olvides confirmar tu asistencia antes del 19 de noviembre usando el enlace: ${invitationLink}`;
+
+          try {
+            await navigator.clipboard.writeText(message);
+            const originalText = button.textContent;
+            button.textContent = "¡Recordatorio Copiado!";
+            button.disabled = true;
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.disabled = false;
+            }, 2000);
+          } catch (err) {
+            console.error("Error al copiar el recordatorio:", err);
+            alert("No se pudo copiar el recordatorio.");
           }
         }
       });
