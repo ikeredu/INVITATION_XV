@@ -9,6 +9,7 @@ interface InvitadoMesa {
   id: string;
   nombre_invitado_principal: string;
   num_asistentes_confirmados: number;
+  confirmado: boolean;
   // Add other properties of an invitado if needed
 }
 
@@ -43,7 +44,7 @@ if (invitadosError) {
 // Fetch all mesas with their guests
 const { data: mesasRaw, error: mesasError } = await supabaseServiceClient
   .from("mesas")
-  .select("*, invitados(*)");
+  .select("*, invitados(*, confirmado)");
 
 if (mesasError) {
   console.error("Error fetching mesas:", mesasError.message);
@@ -278,7 +279,14 @@ const mesasConteo = mesas
                   <ul class="list-disc list-inside text-sm pl-2">
                     {mesa.invitados.length > 0 ? (
                       mesa.invitados.map((invitado) => (
-                        <li>
+                        <li
+                          class={
+                            invitado.confirmado &&
+                            invitado.num_asistentes_confirmados === 0
+                              ? "text-red-500 line-through"
+                              : ""
+                          }
+                        >
                           {invitado.nombre_invitado_principal} (
                           {invitado.num_asistentes_confirmados})
                         </li>
