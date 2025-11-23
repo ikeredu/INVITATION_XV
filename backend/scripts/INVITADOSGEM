@@ -9,50 +9,5 @@
         "nombre_invitado_principal": "cruz Lenin",
         "num_acompanantes_permitidos": 4,
         "nombre_mesa_asignada": "Mesa 2"
-    },
-    {
-        "nombre_invitado_principal": "Velueta Figueroa",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 13"
-    },
-    {
-        "nombre_invitado_principal": "Aguilar sanchez",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 17"
-    },
-    {
-        "nombre_invitado_principal": "Medina reyes",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 20"
-    },
-    {
-        "nombre_invitado_principal": "Teresa martinez",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 20"
-    },
-    {
-        "nombre_invitado_principal": "Jorge mendez",
-        "num_acompanantes_permitidos": 4,
-        "nombre_mesa_asignada": "Mesa 23"
-    },
-    {
-        "nombre_invitado_principal": "Frank bautista",
-        "num_acompanantes_permitidos": 5,
-        "nombre_mesa_asignada": "Mesa 9"
-    },
-    {
-        "nombre_invitado_principal": "Velueta lupita",
-        "num_acompanantes_permitidos": 5,
-        "nombre_mesa_asignada": "Mesa 10"
-    },
-    {
-        "nombre_invitado_principal": "Pacho",
-        "num_acompanantes_permitidos": 5,
-        "nombre_mesa_asignada": "Mesa 21"
-    },
-    {
-        "nombre_invitado_principal": "Marina",
-        "num_acompanantes_permitidos": 7,
-        "nombre_mesa_asignada": "Mesa 26"
     }
 ]
